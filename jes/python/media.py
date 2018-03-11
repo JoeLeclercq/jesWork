@@ -1289,7 +1289,7 @@ import Robot
 import World
 
 
-def turn(robot, degrees=90):
+def turnR(robot, degrees=90):
     if not isinstance(robot, Robot):
         print "turn(robot[, degrees]): Input is not a robot"
         raise ValueError
@@ -1297,7 +1297,7 @@ def turn(robot, degrees=90):
         robot.turn(degrees)
 
 
-def turnRight(robot):
+def turnRightR(robot):
     if not isinstance(robot, Robot):
         print "turnRight(robot): Input is not a robot"
         raise ValueError
@@ -1305,7 +1305,7 @@ def turnRight(robot):
         robot.turnRight()
 
 
-def turnToFace(robot, x, y=None):
+def turnToFaceR(robot, x, y=None):
     if y == None:
         if not (isinstance(robot, Robot) and isinstance(x, Robot)):
             print "turnToFace(robot, robot): First input is not a robot"
@@ -1320,7 +1320,7 @@ def turnToFace(robot, x, y=None):
             robot.turnToFace(x, y)
 
 
-def turnLeft(robot):
+def turnLeftR(robot):
     if not isinstance(robot, Robot):
         print "turnLeft(robot): Input is not a robot"
         raise ValueError
@@ -1328,7 +1328,7 @@ def turnLeft(robot):
         robot.turnLeft()
 
 
-def forward(robot, pixels=100):
+def forwardR(robot, pixels=100):
     if not isinstance(robot, Robot):
         print "forward(robot[, pixels]): Input is not a robot"
         raise ValueError
@@ -1336,7 +1336,7 @@ def forward(robot, pixels=100):
         robot.forward(pixels)
 
 
-def backward(robot, pixels=100):
+def backwardR(robot, pixels=100):
     if not isinstance(robot, Robot):
         print "backward(robot[, pixels]): Input is not a robot"
         raise ValueError
@@ -1346,7 +1346,7 @@ def backward(robot, pixels=100):
         robot.backward(pixels)
 
 
-def moveTo(robot, x, y):
+def moveToR(robot, x, y):
     if not isinstance(robot, Robot):
         print "moveTo(robot, x, y): Input is not a robot"
         raise ValueError
@@ -1361,21 +1361,21 @@ def makeRobot(world):
     return robot
 
 
-def penUp(robot):
+def penUpR(robot):
     if not isinstance(robot, Robot):
         print "penUp(robot): Input is not a robot"
         raise ValueError
     robot.penUp()
 
 
-def penDown(robot):
+def penDownR(robot):
     if not isinstance(robot, Robot):
         print "penDown(robot): Input is not a robot"
         raise ValueError
     robot.penDown()
 
 
-def drop(robot, picture):
+def dropR(robot, picture):
     if not isinstance(robot, Robot):
         print "drop(robot, picture): First input is not a robot"
         raise ValueError
@@ -1385,21 +1385,21 @@ def drop(robot, picture):
     robot.drop(picture)
 
 
-def getXPos(robot):
+def getXPosR(robot):
     if not isinstance(robot, Robot):
         print "getXPos(robot): Input is not a robot"
         raise ValueError
     return robot.getXPos()
 
 
-def getYPos(robot):
+def getYPosR(robot):
     if not isinstance(robot, Robot):
         print "getYPos(robot): Input is not a robot"
         raise ValueError
     return robot.getYPos()
 
 
-def getHeading(robot):
+def getHeadingR(robot):
     if not isinstance(robot, Robot):
         print "getHeading(robot): Input is not a robot"
         raise ValueError

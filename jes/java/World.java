@@ -13,257 +13,284 @@ import java.awt.*;
  * @author Barb Ericson ericson@cc.gatech.edu
  */
 public class World extends JComponent implements ModelDisplay {
-    ////////////////// fields ///////////////////////
+	////////////////// fields ///////////////////////
 
-    /** should automatically repaint when model changed */
-    private boolean autoRepaint = true;
+	/** should automatically repaint when model changed */
+	private boolean autoRepaint = true;
 
-    /** the background color for the world */
-    private Color background = Color.white;
+	/** the background color for the world */
+	private Color background = Color.white;
 
-    /** the width of the world */
-    private int width = 640;
+	/** the width of the world */
+	private int width = 640;
 
-    /** the height of the world */
-    private int height = 480;
+	/** the height of the world */
+	private int height = 480;
 
-    /** the list of turtles in the world */
-    private List<Turtle> turtleList = new ArrayList<Turtle>();
+	/** the list of turtles in the world */
+	private List<Turtle> turtleList = new ArrayList<Turtle>();
 
-    /** the JFrame to show this world in */
-    private JFrame frame = new JFrame("World");
+	/** the list of robots in the world */
+	private List<Robot> robotList = new ArrayList<Robot>();
 
-    /** background picture */
-    private Picture picture = null;
+	/** the JFrame to show this world in */
+	private JFrame frame = new JFrame("World");
 
-    private static final long serialVersionUID = 7526471155622776147L;
+	/** background picture */
+	private Picture picture = null;
 
-    ////////////////// the constructors ///////////////
+	private static final long serialVersionUID = 7526471155622776147L;
 
-    /**
-     * Constructor that takes no arguments
-     */
-    public World() {
-        // set up the world and make it visible
-        initWorld(true);
-    }
+	////////////////// the constructors ///////////////
 
-    /**
-     * Constructor that takes a boolean to
-     * say if this world should be visible
-     * or not
-     * @param visibleFlag if true will be visible
-     * else if false will not be visible
-     */
-    public World(boolean visibleFlag) {
-        initWorld(visibleFlag);
-    }
+	/**
+	 * Constructor that takes no arguments
+	 */
+	public World() {
+		// set up the world and make it visible
+		initWorld(true);
+	}
 
-    /**
-     * Constructor that takes a width and height for this
-     * world
-     * @param w the width for the world
-     * @param h the height for the world
-     */
-    public World(int w, int h) {
-        width = w;
-        height = h;
+	/**
+	 * Constructor that takes a boolean to
+	 * say if this world should be visible
+	 * or not
+	 * @param visibleFlag if true will be visible
+	 * else if false will not be visible
+	 */
+	public World(boolean visibleFlag) {
+		initWorld(visibleFlag);
+	}
 
-        // set up the world and make it visible
-        initWorld(true);
-    }
+	/**
+	 * Constructor that takes a width and height for this
+	 * world
+	 * @param w the width for the world
+	 * @param h the height for the world
+	 */
+	public World(int w, int h) {
+		width = w;
+		height = h;
 
-    ///////////////// methods ///////////////////////////
+		// set up the world and make it visible
+		initWorld(true);
+	}
 
-    /**
-     * Method to initialize the world
-     * @param visibleFlag the flag to make the world
-     * visible or not
-     */
-    private void initWorld(boolean visibleFlag) {
-        // set the preferred size
-        this.setPreferredSize(new Dimension(width, height));
+	///////////////// methods ///////////////////////////
 
-        // create the background picture
-        picture = new Picture(width, height);
+	/**
+	 * Method to initialize the world
+	 * @param visibleFlag the flag to make the world
+	 * visible or not
+	 */
+	private void initWorld(boolean visibleFlag) {
+		// set the preferred size
+		this.setPreferredSize(new Dimension(width, height));
 
-        // add this panel to the frame
-        frame.getContentPane().add(this);
+		// create the background picture
+		picture = new Picture(width, height);
 
-        // pack the frame
-        frame.pack();
+		// add this panel to the frame
+		frame.getContentPane().add(this);
 
-        // show this world
-        frame.setVisible(visibleFlag);
-    }
+		// pack the frame
+		frame.pack();
 
-    /**
-     * Method to get the graphics context for drawing on
-     * @return the graphics context of the background picture
-     */
-    public Graphics getGraphics() {
-        return picture.createGraphics();
-    }
+		// show this world
+		frame.setVisible(visibleFlag);
+	}
 
-    /**
-     * Method to clear the background picture
-     */
-    public void clearBackground() {
-        picture = new Picture(width, height);
-    }
+	/**
+	 * Method to get the graphics context for drawing on
+	 * @return the graphics context of the background picture
+	 */
+	public Graphics getGraphics() {
+		return picture.createGraphics();
+	}
 
-    /**
-     * Method to get the background picture
-     * @return the background picture
-     */
-    public Picture getPicture() {
-        return picture;
-    }
+	/**
+	 * Method to clear the background picture
+	 */
+	public void clearBackground() {
+		picture = new Picture(width, height);
+	}
 
-    /**
-     * Method to set the background picture
-     * @param pict the background picture to use
-     */
-    public void setPicture(Picture pict) {
-        picture = pict;
-    }
+	/**
+	 * Method to get the background picture
+	 * @return the background picture
+	 */
+	public Picture getPicture() {
+		return picture;
+	}
 
-    /**
-     * Method to paint this component
-     * @param g the graphics context
-     */
-    public synchronized void paintComponent(Graphics g) {
-        Turtle turtle = null;
+	/**
+	 * Method to set the background picture
+	 * @param pict the background picture to use
+	 */
+	public void setPicture(Picture pict) {
+		picture = pict;
+	}
 
-        g.setColor(this.background);
+	/**
+	 * Method to paint this component
+	 * @param g the graphics context
+	 */
+	public synchronized void paintComponent(Graphics g) {
+		Turtle turtle = null;
+		Robot robot = null;
 
-        // draw the background image
-        g.drawImage(picture.getImage(), 0, 0, null);
+		g.setColor(this.background);
 
-        // loop drawing each turtle on the background image
-        Iterator<Turtle> iterator = turtleList.iterator();
-        while (iterator.hasNext()) {
-            turtle = iterator.next();
-            turtle.paintComponent(g);
-        }
-    }
+		// draw the background image
+		g.drawImage(picture.getImage(), 0, 0, null);
 
-    /**
-     * Metod to get the last turtle in this world
-     * @return the last turtle added to this world
-     */
-    public Turtle getLastTurtle() {
-        return (Turtle) turtleList.get(turtleList.size() - 1);
-    }
+		// loop drawing each turtle on the background image
+		Iterator<Turtle> iterator = turtleList.iterator();
+		while (iterator.hasNext()) {
+			turtle = iterator.next();
+			turtle.paintComponent(g);
+		}
+		Iterator<Robot> iterator2 = robotList.iterator();
+		while (iterator.hasNext()) {
+			robot = iterator2.next();
+			robot.paintComponent(g);
+		}
+	}
+
+	/**
+	 * Metod to get the last turtle in this world
+	 * @return the last turtle added to this world
+	 */
+	public Turtle getLastTurtle() {
+		return (Turtle) turtleList.get(turtleList.size() - 1);
+	}
 
 
-    /**
-     * Method to add a model to this model displayer
-     * @param model the model object to add
-     */
-    public void addModel(Object model) {
-        turtleList.add((Turtle) model);
-        if (autoRepaint) {
-            repaint();
-        }
-    }
+	/**
+	 * Method to add a model to this model displayer
+	 * @param model the model object to add
+	 */
+	public void addModel(Object model) {
+		if(model instanceof Turtle) {
+			turtleList.add((Turtle) model);
+		}
+		else {
+			robotList.add((Robot) model);
+		}
+		if (autoRepaint) {
+			repaint();
+		}
+	}
 
-    /**
-     * Method to check if this world contains the passed
-     * turtle
-     * @return true if there else false
-     */
-    public boolean containsTurtle(Turtle turtle) {
-        return (turtleList.contains(turtle));
-    }
+	/**
+	 * Method to check if this world contains the passed
+	 * turtle
+	 * @return true if there else false
+	 */
+	public boolean containsTurtle(Turtle turtle) {
+		return (turtleList.contains(turtle));
+	}
 
-    /**
-     * Method to remove the passed object from the world
-     * @param model the model object to remove
-     */
-    public void remove(Object model) {
-        turtleList.remove(model);
-    }
+	/**
+	 * Method to remove the passed object from the world
+	 * @param model the model object to remove
+	 */
+	public void remove(Object model) {
+		if(model instanceof Turtle) {
+			turtleList.remove(model);
+		}
+		else {
+			robotList.remove(model);
+		}
+	}
 
-    /**
-     * Method to get the width in pixels
-     * @return the width in pixels
-     */
-    public int getWidth() {
-        return width;
-    }
+	/**
+	 * Method to get the width in pixels
+	 * @return the width in pixels
+	 */
+	public int getWidth() {
+		return width;
+	}
 
-    /**
-     * Method to get the height in pixels
-     * @return the height in pixels
-     */
-    public int getHeight() {
-        return height;
-    }
+	/**
+	 * Method to get the height in pixels
+	 * @return the height in pixels
+	 */
+	public int getHeight() {
+		return height;
+	}
 
-    /**
-     * Method that allows the model to notify the display
-     */
-    public void modelChanged() {
-        if (autoRepaint) {
-            repaint();
-        }
-    }
+	/**
+	 * Method that allows the model to notify the display
+	 */
+	public void modelChanged() {
+		if (autoRepaint) {
+			repaint();
+		}
+	}
 
-    /**
-     * Method to set the automatically repaint flag
-     * @param value if true will auto repaint
-     */
-    public void setAutoRepaint(boolean value) {
-        autoRepaint = value;
-    }
+	/**
+	 * Method to set the automatically repaint flag
+	 * @param value if true will auto repaint
+	 */
+	public void setAutoRepaint(boolean value) {
+		autoRepaint = value;
+	}
 
-    /**
-     * Method to hide the frame
-     */
-    public void hideFrame() {
-        frame.setVisible(false);
-    }
+	/**
+	 * Method to hide the frame
+	 */
+	public void hideFrame() {
+		frame.setVisible(false);
+	}
 
-    /**
-     * Method to show the frame
-     */
-    public void showFrame() {
-        frame.setVisible(true);
-    }
+	/**
+	 * Method to show the frame
+	 */
+	public void showFrame() {
+		frame.setVisible(true);
+	}
 
-    /**
-     * Method to get the list of turtles in the world
-     * @return a list of turtles in the world
-     */
-    public List getTurtleList() {
-        return turtleList;
-    }
+	/**
+	 * Method to get the list of turtles in the world
+	 * @return a list of turtles in the world
+	 */
+	public List getTurtleList() {
+		return turtleList;
+	}
 
-    /**
-     * Method to get an iterator on the list of turtles
-     * @return an iterator for the list of turtles
-     */
-    public Iterator getTurtleIterator() {
-        return turtleList.iterator();
-    }
+	public List getRobotList() {
+		return robotList;
+	}
+	
+	/**
+	 * Method to get an iterator on the list of turtles
+	 * @return an iterator for the list of turtles
+	 */
+	public Iterator getTurtleIterator() {
+		return turtleList.iterator();
+	}
+	
+	public Iterator getRobotIterator() {
+		return robotList.iterator();
+	}
 
-    /**
-     * Method that returns information about this world
-     * in the form of a string
-     * @return a string of information about this world
-     */
-    public String toString() {
-        return "A " + getWidth() + " by " + getHeight() +
-               " world with " + turtleList.size() + " turtles in it.";
-    }
+	/**
+	 * Method that returns information about this world
+	 * in the form of a string
+	 * @return a string of information about this world
+	 */
+	public String toString() {
+		return "A " + getWidth() + " by " + getHeight() +
+				" world with " + turtleList.size() + " turtles in it\n and " + robotList.size() + "robots in it.";
+	}
 
-    /**
-     * Method that returns the background color of this world
-     * @return the background color this world
-     */
-    public Color getBackground() {
-        return this.background;
-    }
+	/**
+	 * Method that returns the background color of this world
+	 * @return the background color this world
+	 */
+	public Color getBackground() {
+		return this.background;
+	}
 
 } // end of World class
