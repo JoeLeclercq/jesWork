@@ -1284,6 +1284,141 @@ def getTurtleList(world):
 
 # end of stuff imported for worlds and turtles
 
+# let's try the turtles...
+import Robot
+import World
+
+
+def turn(robot, degrees=90):
+    if not isinstance(robot, Robot):
+        print "turn(robot[, degrees]): Input is not a robot"
+        raise ValueError
+    else:
+        robot.turn(degrees)
+
+
+def turnRight(robot):
+    if not isinstance(robot, Robot):
+        print "turnRight(robot): Input is not a robot"
+        raise ValueError
+    else:
+        robot.turnRight()
+
+
+def turnToFace(robot, x, y=None):
+    if y == None:
+        if not (isinstance(robot, Robot) and isinstance(x, Robot)):
+            print "turnToFace(robot, robot): First input is not a robot"
+            raise ValueError
+        else:
+            robot.turnToFace(x)
+    else:
+        if not isinstance(robot, Robot):
+            print "turnToFace(robot, x, y): Input is not a robot"
+            raise ValueError
+        else:
+            robot.turnToFace(x, y)
+
+
+def turnLeft(robot):
+    if not isinstance(robot, Robot):
+        print "turnLeft(robot): Input is not a robot"
+        raise ValueError
+    else:
+        robot.turnLeft()
+
+
+def forward(robot, pixels=100):
+    if not isinstance(robot, Robot):
+        print "forward(robot[, pixels]): Input is not a robot"
+        raise ValueError
+    else:
+        robot.forward(pixels)
+
+
+def backward(robot, pixels=100):
+    if not isinstance(robot, Robot):
+        print "backward(robot[, pixels]): Input is not a robot"
+        raise ValueError
+    if (None == pixels):
+        robot.backward()
+    else:
+        robot.backward(pixels)
+
+
+def moveTo(robot, x, y):
+    if not isinstance(robot, Robot):
+        print "moveTo(robot, x, y): Input is not a robot"
+        raise ValueError
+    robot.moveTo(x, y)
+
+
+def makeRobot(world):
+    if not (isinstance(world, World) or isinstance(world, Picture)):
+        print "makeRobot(world): Input is not a world or picture"
+        raise ValueError
+    robot = Robot(world)
+    return robot
+
+
+def penUp(robot):
+    if not isinstance(robot, Robot):
+        print "penUp(robot): Input is not a robot"
+        raise ValueError
+    robot.penUp()
+
+
+def penDown(robot):
+    if not isinstance(robot, Robot):
+        print "penDown(robot): Input is not a robot"
+        raise ValueError
+    robot.penDown()
+
+
+def drop(robot, picture):
+    if not isinstance(robot, Robot):
+        print "drop(robot, picture): First input is not a robot"
+        raise ValueError
+    if not isinstance(picture, Picture):
+        print "drop(robot, picture): Second input is not a picture"
+        raise ValueError
+    robot.drop(picture)
+
+
+def getXPos(robot):
+    if not isinstance(robot, Robot):
+        print "getXPos(robot): Input is not a robot"
+        raise ValueError
+    return robot.getXPos()
+
+
+def getYPos(robot):
+    if not isinstance(robot, Robot):
+        print "getYPos(robot): Input is not a robot"
+        raise ValueError
+    return robot.getYPos()
+
+
+def getHeading(robot):
+    if not isinstance(robot, Robot):
+        print "getHeading(robot): Input is not a robot"
+        raise ValueError
+    return robot.getHeading()
+
+# add these things: turnToFace(turtle, another turtle)
+## getHeading, getXPos, getYPos
+
+# world methods
+
+
+def getRobotList(world):
+    if not isinstance(world, World):
+        print "getRobotList(world): Input is not a world"
+        raise ValueError
+    return world.getRobotList()
+
+# end of stuff imported for worlds and turtles
+
 # used in the book
 
 

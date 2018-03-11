@@ -18,6 +18,9 @@ JES_API_SECTIONS = [
                'getMediaPath', 'getMediaFolder', 'getShortPath', 'setLibPath']),
     ('Input/Output', ['requestNumber', 'requestInteger', 'requestIntegerInRange', 'requestString',
                       'showWarning', 'showInformation', 'showError', 'printNow']),
+    ('Robots', ['turn', 'turnLeft', 'turnRight', 'forward', 'backward', 'moveTo', 'turnToFace',
+                 'makeRobot', 'penUp', 'penDown', 'makeWorld',
+                 'getRobotList', 'drop', 'getHeading', 'getXPos', 'getYPos']),
     ('Turtles', ['turn', 'turnLeft', 'turnRight', 'forward', 'backward', 'moveTo', 'turnToFace',
                  'makeTurtle', 'penUp', 'penDown', 'makeWorld',
                  'getTurtleList', 'drop', 'getHeading', 'getXPos', 'getYPos']),
@@ -68,11 +71,13 @@ import PictureFrame
 import Picture
 import Pixel
 import Playback
+import Robot
 import SimpleInput
 import SimpleOutput
 import SimplePicture
 import SimpleSound
 import SimpleTurtle
+import SimpleRobot
 import SlideShow
 import SoundExplorer
 import Sound
@@ -99,10 +104,12 @@ API_SECTIONS = [AnimationPanel,
                 Picture,
                 Pixel,
                 Playback,
+                Robot,
                 SimpleInput,
                 SimpleOutput,
                 SimplePicture,
                 SimpleSound,
+                SimpleRobot,
                 SimpleTurtle,
                 SlideShow,
                 SoundExplorer,
