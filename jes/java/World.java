@@ -151,7 +151,7 @@ public class World extends JComponent implements ModelDisplay {
 			turtle.paintComponent(g);
 		}
 		Iterator<Robot> iterator2 = robotList.iterator();
-		while (iterator.hasNext()) {
+		while (iterator2.hasNext()) {
 			robot = iterator2.next();
 			robot.paintComponent(g);
 		}

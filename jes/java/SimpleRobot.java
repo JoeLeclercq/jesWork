@@ -30,7 +30,7 @@ public class SimpleRobot {
     private static int numRobots = 0;
 
     /** array of colors to use for the robots */
-    private static Color[] colorArray = { Color.green, Color.cyan, new Color(204, 0, 204), Color.gray};
+    private static Color[] colorArray = { Color.black, Color.red, new Color(204, 0, 204), Color.gray};
 
     /** who to notify about changes to this robot */
     private ModelDisplay modelDisplay = null;
@@ -139,7 +139,7 @@ public class SimpleRobot {
         this((int)(picture.getWidth() / 2),
              (int)(picture.getHeight() / 2));
         this.picture = picture;
-        this.visible = false; // default is not to see the robot
+        this.visible = true; // default is not to see the robot
     }
 
     //////////////////// methods /////////////////////////
