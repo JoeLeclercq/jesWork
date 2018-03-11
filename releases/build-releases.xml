@@ -1,0 +1,448 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!--
+    This file isn't complete on its own!
+    It needs to be imported from JES's main build.xml.
+-->
+
+    <!-- Release file structures -->
+    <property name="jes.release.basename"   value="jes-${jes.release}" />
+    <property name="jes.release.products"   location="${jes.release.dir}/${jes.release.basename}" />
+    <property name="jes.release.stage"      location="${jes.release.dir}/stage" />
+    <property name="jes.release.resources"  location="${jes.release.dir}/resources" />
+
+    <property name="jes.release.index.src"  location="${jes.release.resources}/index.html" />
+
+
+    <!-- Properties for signatures -->
+    <property name="signing.keystore"       location="${jes.release.dir}/keystore.jks" />
+    <property name="signing.tsaurl"         value="http://timestamp.comodoca.com/rfc3161" />
+
+    <property name="jes.release.jars"       location="${basedir}"
+                                            unless:set="sign" />
+    <property name="jes.release.jars"       location="${jes.release.products}/${jes.release.basename}-jars"
+                                            if:set="sign" />
+
+
+    <!-- Master "release" target -->
+    <target name="release" depends="release-index, release-testkit, release-linux, release-windows-all, release-macosx"
+        description="Build all the releases we can make on the current platform." />
+
+    <target name="release-dir">
+        <mkdir dir="${jes.release.products}" />
+    </target>
+
+    <target name="clean-releases"
+        description="Remove built releases, and the staging directories.">
+        <delete includeemptydirs="true">
+            <fileset dir="${jes.release.dir}">
+                <include name="**/*" />
+                <exclude name="keystore.jks" />
+                <exclude name="build-releases.xml" />
+                <exclude name="resources/**/*" />
+            </fileset>
+        </delete>
+    </target>
+
+    <target name="clean-release-stage"
+        description="Remove the staging directories for releases, but leave the release packages.">
+        <delete dir="${jes.release.stage}" />
+    </target>
+
+
+    <!-- File lists common across releases -->
+    <fileset id="jes.release.contents.python" dir="${basedir}">
+        <include name="jes/python/**/*.py" />
+        <include name="dependencies/jython/**/*" />
+        <exclude name="dependencies/jython/**/*$py.class" />
+        <include name="dependencies/python/**/*" />
+        <exclude name="dependencies/python/**/*$py.class" />
+    </fileset>
+
+    <fileset id="jes.release.contents.java-src" dir="${basedir}">
+        <include name="jes/java/**/*.java" />
+        <include name="dependencies/jmusic-instruments/java/**/*.java" />
+    </fileset>
+
+    <fileset id="jes.release.contents.jars" dir="${jes.release.jars}">
+        <include name="jes/classes.jar" />
+        <include name="dependencies/jars/**/*.jar" />
+    </fileset>
+
+    <fileset id="jes.release.contents.static" dir="${basedir}">
+        <include name="jes/images/**/*" />
+        <include name="jes/help/**/*" />
+        <include name="jes/javadoc/**/*" />
+    </fileset>
+
+    <fileset id="jes.release.extras" dir="${basedir}">
+        <include name="demos/**/*" />
+        <exclude name="**/*.pybak" />
+        <exclude name="**/*.pylog" />
+        <exclude name="**/*$py.class" />
+    </fileset>
+
+
+    <!-- Common readme fragments -->
+    <loadfile property="jes.release.text.introduction"
+        srcFile="${jes.release.resources}/introduction.txt" />
+    <filter token="introductiontext"            value="${jes.release.text.introduction}" />
+
+    <loadfile property="jes.release.text.copyright"
+        srcFile="${jes.help.copyright}" />
+    <filter token="copyrighttext"               value="${jes.release.text.copyright}" />
+
+
+    <target name="release-index" depends="release-dir, scminfo">
+        <copy file="${jes.release.index.src}" todir="${jes.release.products}" filtering="on" overwrite="true" />
+    </target>
+
+
+    <!-- Signing jars -->
+    <target name="signed-jars" depends="compile, release-dir" if="sign"
+        description="Create signed copies of all the JARs. (pass -Dsign=true -Dsigning.key=key alias)">
+        <!-- Get the passwords -->
+        <input addproperty="signing.storepass"
+               message="Enter the keystore password: "
+               unless:set="signing.storepass">
+            <handler type="secure" />
+        </input>
+
+        <input addproperty="signing.keypass.input"
+               message="Enter the private key password (hit ENTER for same): "
+               unless:set="signing.keypass">
+            <handler type="secure" />
+        </input>
+
+        <property name="signing.keypass" value="${signing.storepass}"
+                  if:blank="signing.keypass.input" />
+        <property name="signing.keypass" value="${signing.keypass.input}"
+                  unless:blank="signing.keypass.input" />
+
+        <!-- OK, now actually sign them -->
+        <mkdir dir="${jes.release.jars}/jes" />
+        <mkdir dir="${jes.release.jars}/dependencies/jars" />
+
+        <!-- <delete>
+            <fileset dir="${jes.release.jars}">
+                <include name="**/*.jar" />
+            </fileset>
+        </delete> -->
+
+        <signjar destDir="${jes.release.jars}"
+            keystore="${signing.keystore}" alias="${signing.key}"
+            storepass="${signing.storepass}" keypass="${signing.keypass}"
+            tsaurl="${signing.tsaurl}">
+
+            <path>
+                <fileset dir="${basedir}">
+                    <include name="jes/classes.jar" />
+                    <include name="dependencies/jars/**/*.jar" />
+                </fileset>
+            </path>
+        </signjar>
+    </target>
+
+
+    <!-- linux release type: shell script, no embedded Java -->
+    <property name="jes.release.linux.resources"    location="${jes.release.resources}/linux" />
+    <property name="jes.release.linux.readme"       location="${jes.release.linux.resources}/JESReadme.txt" />
+
+    <property name="jes.release.linux.basename"     value="${jes.release.basename}-linux" />
+    <property name="jes.release.linux.stage"
+            location="${jes.release.stage}/${jes.release.linux.basename}" />
+    <property name="jes.release.linux.tarball"
+            location="${jes.release.products}/${jes.release.linux.basename}.tar.gz" />
+
+    <target name="release-linux" depends="build, release-dir, signed-jars"
+        description="Build a release for Linux and other UNIX systems.">
+        <!-- Create and clean the stage directory -->
+        <mkdir dir="${jes.release.linux.stage}" />
+        <delete includeemptydirs="true">
+            <fileset dir="${jes.release.linux.stage}" includes="**/*" />
+        </delete>
+
+        <!-- Copy everything JES needs into the stage directory -->
+        <copy todir="${jes.release.linux.stage}">
+            <fileset refid="jes.release.contents.python" />
+            <fileset refid="jes.release.contents.jars" />
+            <fileset refid="jes.release.contents.java-src" />
+            <fileset refid="jes.release.contents.static" />
+            <fileset refid="jes.release.extras" />
+        </copy>
+
+        <copy file="${jes.launcher.sh}" todir="${jes.release.linux.stage}" />
+        <chmod file="${jes.release.linux.stage}/jes.sh" perm="755" />
+
+        <copy file="${jes.release.linux.resources}/add-to-menu.sh" todir="${jes.release.linux.stage}" filtering="on" />
+        <chmod file="${jes.release.linux.stage}/add-to-menu.sh" perm="755" />
+
+        <copy file="${jes.help.copyright}" todir="${jes.release.linux.stage}" />
+        <copy file="${jes.release.linux.readme}" todir="${jes.release.linux.stage}" filtering="on" />
+
+        <!-- Tar it all up -->
+        <tar destfile="${jes.release.linux.tarball}" longfile="gnu" compression="gzip">
+            <tarfileset dir="${jes.release.stage}"
+                includes="${jes.release.linux.basename}/**/*"
+                excludes="${jes.release.linux.basename}/jes.sh" />
+            <tarfileset dir="${jes.release.stage}" filemode="755"
+                includes="${jes.release.linux.basename}/*.sh" />
+        </tar>
+    </target>
+
+
+    <!-- Common code across Windows release types -->
+    <property name="jes.release.windows.resources"  location="${jes.release.resources}/windows" />
+    <property name="jes.release.windows.exe"        location="${jes.release.windows.resources}/JES.exe" />
+
+    <property name="jes.release.windows.basename"   value="${jes.release.basename}-windows" />
+    <property name="jes.release.windows.stage"
+            location="${jes.release.stage}/${jes.release.windows.basename}" />
+    <property name="jes.release.windows.stage.readmes"
+            location="${jes.release.windows.stage}/readmes" />
+
+    <property name="jes.release.windows.jre.basename" value="jre-win32-1.7.0_60" />
+    <property name="jes.release.windows.jre.zipfile"
+            location="${jes.release.windows.resources}/${jes.release.windows.jre.basename}.zip" />
+
+    <target name="release-windows-all"
+        depends="release-windows-zip-nojava, release-windows-zip-java, release-windows-installer"
+        description="Build all available Windows release types." />
+
+    <target name="release-windows-contents" depends="build, signed-jars"
+        description="Build the release contents for Windows, but not an actual release.">
+        <!-- Create and clean the stage directory -->
+        <mkdir dir="${jes.release.windows.stage}" />
+        <delete includeemptydirs="true">
+            <fileset dir="${jes.release.windows.stage}" includes="**/*" />
+        </delete>
+
+        <!-- Copy everything JES needs into the stage directory -->
+        <copy todir="${jes.release.windows.stage}">
+            <fileset refid="jes.release.contents.python" />
+            <fileset refid="jes.release.contents.jars" />
+            <fileset refid="jes.release.contents.java-src" />
+            <fileset refid="jes.release.contents.static" />
+            <fileset refid="jes.release.extras" />
+        </copy>
+
+        <copy file="${jes.launcher.bat}" todir="${jes.release.windows.stage}" />
+        <copy file="${jes.release.windows.exe}" todir="${jes.release.windows.stage}" />
+        <copy file="${jes.help.copyright}" todir="${jes.release.windows.stage}"
+            encoding="${jes.encoding}" outputencoding="Cp1252" />
+    </target>
+
+    <fileset id="jes.release.windows.stage.contents" dir="${jes.release.windows.stage}">
+        <exclude name="readmes/" />
+        <exclude name="*.nsi" />
+        <exclude name="${jes.release.windows.basename}-*.exe" />
+    </fileset>
+
+
+    <!-- windows-zip release type: exe + batch file in a ZIP, no embedded Java -->
+    <property name="jes.release.windows.zip-nojava.zipfile"
+            location="${jes.release.products}/${jes.release.windows.basename}-java-required.zip" />
+    <property name="jes.release.windows.zip-java.zipfile"
+            location="${jes.release.products}/${jes.release.windows.basename}-java-included.zip" />
+
+    <target name="release-windows-zip-nojava" depends="release-windows-contents, release-dir"
+        description="Build a ZIP file for Windows (with no JRE).">
+        <!-- Reset the ZIP -->
+        <delete file="${jes.release.windows.zip-nojava.zipfile}" />
+        <!-- Build our readme...we're doing this slightly weirdly -->
+        <mkdir dir="${jes.release.windows.stage.readmes}/zip-nojava" />
+        <copy file="${jes.release.windows.resources}/zip-nojava-readme.txt"
+                tofile="${jes.release.windows.stage.readmes}/zip-nojava/JESReadme.txt"
+                encoding="${jes.encoding}" outputencoding="Cp1252"
+                filtering="on" />
+
+        <!-- ZIP it all up -->
+        <zip destfile="${jes.release.windows.zip-nojava.zipfile}">
+            <fileset refid="jes.release.windows.stage.contents" />
+            <fileset dir="${jes.release.windows.stage.readmes}/zip-nojava" />
+        </zip>
+    </target>
+
+    <target name="release-windows-zip-java" depends="release-windows-contents, release-dir"
+        description="Build a ZIP file for Windows (including a JRE).">
+        <!-- Reset the ZIP -->
+        <delete file="${jes.release.windows.zip-java.zipfile}" />
+        <!-- Build our readme...we're doing this slightly weirdly -->
+        <mkdir dir="${jes.release.windows.stage.readmes}/zip-java" />
+        <copy file="${jes.release.windows.resources}/zip-java-readme.txt"
+                tofile="${jes.release.windows.stage.readmes}/zip-java/JESReadme.txt"
+                encoding="${jes.encoding}" outputencoding="Cp1252"
+                filtering="on" />
+        <copy file="${jes.release.windows.resources}/jre-win32-readme.txt"
+                tofile="${jes.release.windows.stage.readmes}/zip-java/JavaReadme.txt"
+                filtering="on" />
+
+        <!-- ZIP it all up -->
+        <zip destfile="${jes.release.windows.zip-java.zipfile}">
+            <fileset refid="jes.release.windows.stage.contents" />
+            <fileset dir="${jes.release.windows.stage.readmes}/zip-java" />
+            <zipfileset src="${jes.release.windows.jre.zipfile}"
+                    includes="**/*"
+                    prefix="${jes.launcher.bat.embedded-jre}" />
+        </zip>
+    </target>
+
+
+    <!-- windows-installer release type: exe + batch file, packed with NSIS, no embedded Java -->
+    <property name="jes.release.windows.installer.filename"
+            value="${jes.release.windows.basename}.exe" />
+
+    <property name="jes.release.windows.installer.stage"
+            location="${jes.release.windows.stage}/${jes.release.windows.installer.filename}" />
+    <property name="jes.release.windows.installer.exe"
+            location="${jes.release.products}/${jes.release.windows.installer.filename}" />
+
+    <target name="release-windows-installer" depends="release-windows-contents, release-dir" if="makensis"
+        description="Build an EXE installer for Windows. (pass -Dmakensis=path to makensis.exe)">
+        <!-- Reset the installer -->
+        <delete file="${jes.release.windows.installer.stage}" />
+
+        <!-- Copy the .nsi file -->
+        <copy file="${jes.release.windows.resources}/jes-installer.nsi"
+                todir="${jes.release.windows.stage}" filtering="on" />
+
+        <!-- Run makensis -->
+        <exec executable="${makensis}" dir="${jes.release.windows.stage}">
+            <arg value="jes-installer.nsi" />
+        </exec>
+
+        <!-- Move it to the releases directory -->
+        <move file="${jes.release.windows.installer.stage}" todir="${jes.release.products}" />
+    </target>
+
+
+    <!-- Mac OS X release -->
+    <property name="jes.release.macosx.basename" value="${jes.release.basename}-macosx" />
+    <property name="jes.release.macosx.resources" location="${jes.release.resources}/macosx" />
+    <property name="jes.release.macosx.stage"
+            location="${jes.release.stage}/${jes.release.macosx.basename}" />
+
+    <property name="jes.release.macosx.readme" location="${jes.release.macosx.resources}/JES Information.txt" />
+
+    <property name="jes.release.macosx.bundle" location="${jes.release.macosx.stage}/JES.app" />
+    <property name="jes.release.macosx.bundle.contents"
+            location="${jes.release.macosx.bundle}/Contents/Resources/Java" />
+    <property name="jes.release.macosx.bundle.infoplist"
+            location="${jes.release.macosx.bundle}/Contents/Info.plist" />
+
+    <property name="jes.release.macosx.typescript"
+            location="${jes.release.macosx.resources}/add-type-info.py" />
+
+    <property name="jes.release.macosx.zipfile"
+            location="${jes.release.products}/${jes.release.macosx.basename}.zip" />
+
+    <!-- macosx-app release type: app packed with AppBundler -->
+    <taskdef name="jarbundler"
+             classname="net.sourceforge.jarbundler.JarBundler"
+             classpath="${jes.release.macosx.resources}/jarbundler-2.3.1.jar" />
+
+    <target name="release-macosx" depends="build, release-dir, signed-jars"
+        description="Build an .app package for Mac OS X.">
+        <!-- Build the JES.app skeleton -->
+        <delete dir="${jes.release.macosx.bundle}" />
+        <delete file="${jes.release.macosx.zipfile}" />
+        <mkdir dir="${jes.release.macosx.stage}" />
+
+        <jarbundler dir="${jes.release.macosx.stage}"
+            mainclass="${jes.main}"
+            name="JES"
+            bundleid="edu.gatech.cc.csl.JES"
+            version="${jes.release}"
+            copyright="${jes.copyright}"
+            icon="${jes.home}/images/JESi2.icns"
+            signature="JESX"
+            stubfile="${jes.release.macosx.resources}/jes-launcher.sh"
+            jvmversion="${jes.target-java}+"
+            verbose="true">
+
+            <jarfileset dir="${jes.release.jars}">
+                <include name="jes/classes.jar" />
+                <include name="dependencies/jars/*.jar" />
+            </jarfileset>
+        </jarbundler>
+
+        <!-- Copy in the extra stuff -->
+        <copy todir="${jes.release.macosx.bundle.contents}">
+            <fileset refid="jes.release.contents.python" />
+            <fileset refid="jes.release.contents.java-src" />
+            <fileset refid="jes.release.contents.static" />
+        </copy>
+
+        <!-- Patch the Info.plist file -->
+        <java classname="${python.main}" failonerror="true">
+            <classpath refid="jes.classpath" />
+            <sysproperty key="python.home" value="${python.home}" />
+
+            <arg file="${jes.release.macosx.typescript}" />
+            <arg file="${jes.release.macosx.bundle.infoplist}" />
+        </java>
+
+    	<copy file="${jes.release.macosx.readme}"
+              tofile="${jes.release.macosx.stage}/JES Information.txt"
+               />
+
+        <copy file="${jes.help.copyright}"
+              tofile="${jes.release.macosx.stage}/JES Copyright.txt"
+               /> 
+
+        <!-- Zip it all up -->
+        <zip destfile="${jes.release.macosx.zipfile}">
+            <zipfileset  dir="${jes.release.macosx.stage}" >
+                <include name="JES.app/**/*" />
+                <include name="JES Information.txt" />
+                <include name="JES Copyright.txt" /> 
+                <exclude name="JES.app/Contents/MacOS/jes-launcher.sh" />
+            </zipfileset>
+
+         <zipfileset dir="${basedir}/demos" prefix="/Demos">
+                <include name="**/*" />
+                <exclude name="**/*.pybak" />
+                <exclude name="**/*.pylog" />
+                <exclude name="**/*$py.class" />
+            </zipfileset> 
+
+            <zipfileset filemode="755" dir="${jes.release.macosx.stage}" >
+                <include name="JES.app/Contents/MacOS/jes-launcher.sh" />
+            </zipfileset>
+        </zip>
+    </target>
+
+
+    <!-- testkit: A set of tests -->
+    <property name="jes.release.testkit.basename" value="${jes.release.basename}-testkit" />
+
+    <property name="jes.release.testkit.zipfile"
+            location="${jes.release.products}/${jes.release.testkit.basename}.zip" />
+
+    <target name="release-testkit" depends="release-dir"
+        description="Build a package of testing materials.">
+        <!-- Reset it -->
+        <delete file="${jes.release.testkit.zipfile}" />
+
+        <!-- Zip it all up -->
+        <zip destfile="${jes.release.testkit.zipfile}">
+            <zipfileset prefix="${jes.release.testkit.basename}"
+                dir="${basedir}">
+                <include name="demos/**/*" />
+                <include name="tests/**/*" />
+                <exclude name="**/*.pybak" />
+                <exclude name="**/*.pylog" />
+                <exclude name="**/*$py.class" />
+            </zipfileset>
+
+            <zipfileset prefix="${jes.release.testkit.basename}"
+                dir="${jes.help}">
+                <include name="JESCopyright.txt" />
+            </zipfileset>
+
+            <zipfileset prefix="${jes.release.testkit.basename}"
+                dir="${basedir}/working-on-jes">
+                <include name="ui-test-plan.txt" />
+            </zipfileset>
+        </zip>
+    </target>
