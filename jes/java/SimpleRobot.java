@@ -30,7 +30,7 @@ public class SimpleRobot {
     private static int numRobots = 0;
 
     /** array of colors to use for the robots */
-    private static Color[] colorArray = { Color.black, Color.red, new Color(204, 0, 204), Color.gray};
+    private static Color[] colorArray = { Color.gray, Color.red, new Color(204, 0, 204), Color.blue};
 
     /** who to notify about changes to this robot */
     private ModelDisplay modelDisplay = null;
@@ -39,10 +39,10 @@ public class SimpleRobot {
     private Picture picture = null;
 
     /** width of robot in pixels */
-    private int width = 15;
+    private int width = 18;
 
     /** height of robot in pixels */
-    private int height = 18;
+    private int height = 28;
 
     /** current location in x (center) */
     private int xPos = 0;
@@ -708,30 +708,37 @@ public class SimpleRobot {
             int thirdHeight = (int)(height / 3); // of shell
             int thirdWidth = (int)(width / 3); // of shell
 
-            // draw the body parts (head)
-            g2.setColor(bodyColor);
-            g2.fillOval(xPos - quarterWidth,
-                        yPos - halfHeight - (int)(height / 3),
-                        halfWidth, thirdHeight);
-            g2.fillOval(xPos - (2 * thirdWidth),
-                        yPos - thirdHeight,
-                        thirdWidth, thirdHeight);
-            g2.fillOval(xPos - (int)(1.6 * thirdWidth),
-                        yPos + thirdHeight,
-                        thirdWidth, thirdHeight);
-            g2.fillOval(xPos + (int)(1.3 * thirdWidth),
-                        yPos - thirdHeight,
-                        thirdWidth, thirdHeight);
-            g2.fillOval(xPos + (int)(0.9 * thirdWidth),
-                        yPos + thirdHeight,
-                        thirdWidth, thirdHeight);
+            // draw the body parts (head
+            //head
+//            g2.fillOval(xPos - quarterWidth,
+//                        yPos - halfHeight - (int)(height / 3),
+//                        halfWidth, thirdHeight);
+//            //top left
+//            g2.fillOval(xPos - (2 * thirdWidth),
+//                        yPos - thirdHeight,
+//                        thirdWidth, thirdHeight);
+//            //bottom left
+//            g2.fillOval(xPos - (int)(1.6 * thirdWidth),
+//                        yPos + thirdHeight,
+//                        thirdWidth, thirdHeight);
+//            //top right
+//            g2.fillOval(xPos + (int)(1.3 * thirdWidth),
+//                        yPos - thirdHeight,
+//                        thirdWidth, thirdHeight);
+//            //bottom right
+//            g2.fillOval(xPos + (int)(0.9 * thirdWidth),
+//                        yPos + thirdHeight,
+//                        thirdWidth, thirdHeight);
 
 
             // draw the shell
             g2.setColor(getShellColor());
-            g2.fillOval(xPos - halfWidth,
+            g2.fillRect(xPos - halfWidth,
                         yPos - halfHeight, width, height);
-
+            g2.setColor(bodyColor);
+            g2.fillOval(xPos - quarterWidth - 2,
+                    yPos - thirdHeight,
+                    thirdWidth + 4, thirdHeight);
             // draw the info string if the flag is true
             if (showInfo) {
                 drawInfoString(g2);
