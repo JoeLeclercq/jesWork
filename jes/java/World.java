@@ -16,10 +16,10 @@ public class World extends JComponent implements ModelDisplay {
 	////////////////// fields ///////////////////////
 
 	/** should automatically repaint when model changed */
-	private boolean autoRepaint = true;
+	protected boolean autoRepaint = true;
 
 	/** the background color for the world */
-	private Color background = Color.white;
+	protected Color background = Color.white;
 
 	/** the width of the world */
 	private int width = 640;
@@ -28,16 +28,16 @@ public class World extends JComponent implements ModelDisplay {
 	private int height = 480;
 
 	/** the list of turtles in the world */
-	private List<Turtle> turtleList = new ArrayList<Turtle>();
+	protected List<Turtle> turtleList = new ArrayList<Turtle>();
 
 	/** the list of robots in the world */
-	private List<Robot> robotList = new ArrayList<Robot>();
+	protected List<Robot> robotList = new ArrayList<Robot>();
 
 	/** the JFrame to show this world in */
 	private JFrame frame = new JFrame("World");
 
 	/** background picture */
-	private Picture picture = null;
+	protected Picture picture = null;
 
 	private static final long serialVersionUID = 7526471155622776147L;
 

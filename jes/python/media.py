@@ -1267,12 +1267,12 @@ def getHeading(turtle):
 
 # world methods
 
-
+import WorldMyEdits
 def makeWorld(width=None, height=None):
     if(width and height):
-        w = World(width, height)
+        w = WorldMyEdits(width, height)
     else:
-        w = World()
+        w = WorldMyEdits()
     return w
 
 
@@ -1417,11 +1417,27 @@ def getRobotList(world):
         raise ValueError
     return world.getRobotList()
 
-# end of stuff imported for worlds and turtles
+# end of stuff imported for worlds and robots
+import Obstacle
 
+def makeObstacle(world):
+    if not (isinstance(world, World) or isinstance(world, Picture)):
+        print "makeObstacle(world): Input is not a world or picture"
+        raise ValueError
+    obstacle = Obstacle(world)
+    return obstacle
 # used in the book
+import Sensor
+import LightSensor
 
-
+def getGroundBrightness(world, robot, sensor):
+    if not (isinstance(world, World) or isinstance(world, Picture) or isInstance(robot, Robot) or isIstance(sensor,LightSensor)):
+        print "getGroundBrightness(robot, sensor): Input is not a world, a picture, a robot, or a lightsensor"
+        raise ValueError
+    p = getPixel(world, getXPos(robot), getYPos(robot))
+    brightness = getRed(p)**2+getGreen(p)**2+getBlue(p)**2
+    print "The color of the ground below the sensor is " + str(brightness)
+    
 def printNow(text):
     print text
 

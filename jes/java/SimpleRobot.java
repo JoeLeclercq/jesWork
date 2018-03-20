@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.font.*;
 import java.awt.geom.*;
+import java.util.ArrayList;
 import java.util.Observer;
 import java.util.Random;
 
@@ -71,9 +72,13 @@ public class SimpleRobot {
     /** flag to say if should show robot info */
     private boolean showInfo = false;
 
+    private boolean lightSensor = false;
+    
+    private boolean touchSensor = true;
     /** the name of this robot */
     private String name = "No name";
-
+    
+    private ArrayList<Sensor> sensors = new ArrayList<Sensor>();
     ////////////////// constructors ///////////////////
 
     /**
@@ -760,7 +765,21 @@ public class SimpleRobot {
         g.setColor(infoColor);
         g.drawString(this.toString(), xPos + (int)(width / 2), yPos);
     }
-
+    
+    public void addSensor(Sensor sensor) {
+    	if(sensor instanceof LightSensor) {
+    		this.lightSensor = true;
+    	}
+//    	else if (sensor instanceof TouchSensor) {
+//    		this.touchSensor = true;
+//    	}
+    	sensors.add(sensor);
+    }
+    
+    public boolean hasLight() {
+    	return lightSensor;
+    }
+    
     /**
      * Method to return a string with information
      * about this robot
