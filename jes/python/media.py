@@ -1434,7 +1434,7 @@ def makeRectangle(world, pic):
         print "makeObstacle(pic): Input is not a picture"
         raise ValueError
     obstacle = Obstacle(world)
-    makeRectFilled(pic,20,30,20,25)
+    addRectFilled(pic,20,30,20,25)
     return obstacle
 # used in the book
 import Sensor
