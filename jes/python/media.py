@@ -1430,9 +1430,19 @@ def makeObstacle(world):
 import Sensor
 import LightSensor
 
-def getGroundBrightness(world, robot, sensor):
-    if not (isinstance(world, World) or isinstance(world, Picture) or isInstance(robot, Robot) or isIstance(sensor,LightSensor)):
-        print "getGroundBrightness(robot, sensor): Input is not a world, a picture, a robot, or a lightsensor"
+def addLightSensor(robot):
+    if not (isinstance(robot, Robot)):
+        print "getGroundBrightness(robot, sensor): Input is not a robot"
+        raise ValueError
+    sensor = LightSensor()
+    robot.addSensor(sensor)
+
+def getGroundBrightness(world, robot):
+    if not (isinstance(world, World) or isinstance(world, Picture) or isInstance(robot, Robot)):
+        print "getGroundBrightness(robot, sensor): Input is not a world, a picture, or a robot"
+        raise ValueError
+    if (robot.hasLight()):
+        print "getGroundBrightness(robot, sensor): Input is not a world, a picture, or a robot"
         raise ValueError
     p = getPixel(world, getXPos(robot), getYPos(robot))
     brightness = getRed(p)**2+getGreen(p)**2+getBlue(p)**2
