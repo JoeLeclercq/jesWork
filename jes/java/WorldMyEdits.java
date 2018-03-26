@@ -29,6 +29,11 @@ public class WorldMyEdits extends World {
 		g.drawImage(picture.getImage(), 0, 0, null);
 
 		// loop drawing each turtle on the background image
+		Iterator<Obstacle> iterator3 = obstacleList.iterator();
+		while (iterator3.hasNext()) {
+			obstacle = iterator3.next();
+			obstacle.paintComponent(g);
+		}
 		Iterator<Turtle> iterator = turtleList.iterator();
 		while (iterator.hasNext()) {
 			turtle = iterator.next();
@@ -38,11 +43,6 @@ public class WorldMyEdits extends World {
 		while (iterator2.hasNext()) {
 			robot = iterator2.next();
 			robot.paintComponent(g);
-		}
-		Iterator<Obstacle> iterator3 = obstacleList.iterator();
-		while (iterator3.hasNext()) {
-			obstacle = iterator3.next();
-			obstacle.paintComponent(g);
 		}
 	}
 }
