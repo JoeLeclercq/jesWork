@@ -1271,9 +1271,11 @@ import WorldMyEdits
 def makeWorld(width=None, height=None):
     if(width and height):
         w = WorldMyEdits(width, height)
+        pic = makeEmptyPicture(width, height)
     else:
         w = WorldMyEdits()
-    return w
+        pic = makeEmptyPicture(640, 480)
+    return w, pic
 
 
 def getTurtleList(world):
@@ -1420,11 +1422,19 @@ def getRobotList(world):
 # end of stuff imported for worlds and robots
 import Obstacle
 
-def makeObstacle(world):
-    if not (isinstance(world, World) or isinstance(world, Picture)):
-        print "makeObstacle(world): Input is not a world or picture"
+def makeObstacle(pic):
+    if not (isinstance(world, Picture)):
+        print "makeObstacle(pic): Input is not a picture"
+        raise ValueError
+    obstacle = Obstacle(pic)
+    return obstacle
+    
+def makeRectangle(world, pic):
+    if not (isinstance(world, World) or isinstance(pic, Picture)):
+        print "makeObstacle(pic): Input is not a picture"
         raise ValueError
     obstacle = Obstacle(world)
+    makeRectFilled(pic,20,30,20,25)
     return obstacle
 # used in the book
 import Sensor
@@ -1437,15 +1447,14 @@ def addLightSensor(robot):
     sensor = LightSensor()
     robot.addSensor(sensor)
 
-def getGroundBrightness(world, robot):
-    if not (isinstance(world, World) or isinstance(world, Picture) or isInstance(robot, Robot)):
-        print "getGroundBrightness(robot, sensor): Input is not a world, a picture, or a robot"
+def getGroundBrightness(world, picture, robot):
+    if not (isinstance(world, World) or isinstance(picture, Picture) or isInstance(robot, Robot)):
+        print "getGroundBrightness(world, picture, robot): Input is not a world, a picture, or a robot"
         raise ValueError
-    if (robot.hasLight()):
-        print "getGroundBrightness(robot, sensor): Input is not a world, a picture, or a robot"
-        raise ValueError
-    p = getPixel(world, getXPos(robot), getYPos(robot))
-    brightness = getRed(p)**2+getGreen(p)**2+getBlue(p)**2
+    if not (robot.hasLight()):
+        print "This robot does not have a sensor"
+    p = getPixel(picture, getXPosR(robot), getYPosR(robot))
+    brightness = (getRed(p)+getGreen(p)+getBlue(p)+40)*.8/3
     print "The color of the ground below the sensor is " + str(brightness)
     
 def printNow(text):

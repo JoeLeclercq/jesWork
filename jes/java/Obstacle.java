@@ -50,35 +50,6 @@ public class Obstacle{
 	public Color getColor() {
 		return color;
 	}
-	public synchronized void updateDisplay() {
-        // check that x and y are at least 0
-        if (xPos < 0) {
-            xPos = 0;
-        }
-        if (yPos < 0) {
-            yPos = 0;
-        }
-
-        // if picture
-        if (picture != null) {
-            if (xPos >= picture.getWidth()) {
-                xPos = picture.getWidth() - 1;
-            }
-            if (yPos >= picture.getHeight()) {
-                yPos = picture.getHeight() - 1;
-            }
-            Graphics g = picture.getGraphics();
-            paintComponent(g);
-        } else if (modelDisplay != null) {
-            if (xPos >= modelDisplay.getWidth()) {
-                xPos = modelDisplay.getWidth() - 1;
-            }
-            if (yPos >= modelDisplay.getHeight()) {
-                yPos = modelDisplay.getHeight() - 1;
-            }
-            modelDisplay.modelChanged();
-        }
-    }
 	public synchronized void paintComponent(Graphics g) {
         // cast to 2d object
         Graphics2D g2 = (Graphics2D) g;
