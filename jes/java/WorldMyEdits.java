@@ -4,7 +4,7 @@ import java.util.Iterator;
 
 public class WorldMyEdits extends World {
 	private ArrayList<Obstacle> obstacleList = new ArrayList<Obstacle>();
-	
+	private ArrayList<Wall> wallList = new ArrayList<Wall>();
 	public void addModel(Object model) {
 		if(model instanceof Turtle) {
 			turtleList.add((Turtle) model);
@@ -12,8 +12,14 @@ public class WorldMyEdits extends World {
 		else if(model instanceof Robot){
 			robotList.add((Robot) model);
 		}
-		else {
+		else if (model instanceof Obstacle){
 			obstacleList.add((Obstacle) model);
+		}
+		else {
+			wallList.add((Wall) model);
+			for(Robot robot: robotList) {
+				robot.addWall((Wall) model);
+			}
 		}
 		if (autoRepaint) {
 			repaint();
@@ -23,6 +29,7 @@ public class WorldMyEdits extends World {
 		Turtle turtle = null;
 		Robot robot = null;
 		Obstacle obstacle = null;
+		Wall wall = null;
 		g.setColor(this.background);
 
 		// draw the background image
@@ -33,6 +40,11 @@ public class WorldMyEdits extends World {
 		while (iterator3.hasNext()) {
 			obstacle = iterator3.next();
 			obstacle.paintComponent(g);
+		}
+		Iterator<Wall> iterator4 = wallList.iterator();
+		while (iterator4.hasNext()) {
+			wall = iterator4.next();
+			wall.paintComponent(g);
 		}
 		Iterator<Turtle> iterator = turtleList.iterator();
 		while (iterator.hasNext()) {

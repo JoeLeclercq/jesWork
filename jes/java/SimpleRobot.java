@@ -79,6 +79,8 @@ public class SimpleRobot {
     private String name = "No name";
     
     private ArrayList<Sensor> sensors = new ArrayList<Sensor>();
+    
+    private ArrayList<Wall> wallList = new ArrayList<Wall>();
     ////////////////// constructors ///////////////////
 
     /**
@@ -586,6 +588,16 @@ public class SimpleRobot {
         // change the current position
         xPos = oldX + (int) Math.round(pixels *  Math.sin(Math.toRadians(heading)));
         yPos = oldY + (int) Math.round(pixels * -Math.cos(Math.toRadians(heading)));
+        for(Wall wall: wallList) {
+        	int x = wall.getX();
+        	int y = wall.getY();
+        	Rectangle check = new Rectangle(x-20, y-20, wall.getDeltaX()+40, wall.getDeltaY()+40);
+        	if(check.contains(xPos, yPos)) {
+        		xPos = oldX;
+        		yPos = oldY;
+        	}
+        	break;
+        }
 
         // add a move from the old position to the new position to the pen
         pen.addMove(oldX, oldY, xPos, yPos);
@@ -754,6 +766,10 @@ public class SimpleRobot {
 //    		this.touchSensor = true;
 //    	}
     	sensors.add(sensor);
+    }
+    
+    public void addWall(Wall wall) {
+    	wallList.add(wall);
     }
     
     public boolean hasLight() {

@@ -1289,14 +1289,16 @@ def getTurtleList(world):
 # let's try the turtles...
 import Robot
 import World
-
+import time
 
 def turnR(robot, degrees=90):
     if not isinstance(robot, Robot):
         print "turn(robot[, degrees]): Input is not a robot"
         raise ValueError
     else:
-        robot.turn(degrees)
+        for i in range(0,degrees):
+            robot.turn(1)
+            time.sleep(.020)
 
 
 def turnRightR(robot):
@@ -1304,7 +1306,7 @@ def turnRightR(robot):
         print "turnRight(robot): Input is not a robot"
         raise ValueError
     else:
-        robot.turnRight()
+        turnR(robot, 90)
 
 
 def turnToFaceR(robot, x, y=None):
@@ -1327,7 +1329,9 @@ def turnLeftR(robot):
         print "turnLeft(robot): Input is not a robot"
         raise ValueError
     else:
-        robot.turnLeft()
+        for i in range(0,90):
+            robot.turn(-1)
+            time.sleep(.020)
 
 
 def forwardR(robot, pixels=100):
@@ -1335,17 +1339,17 @@ def forwardR(robot, pixels=100):
         print "forward(robot[, pixels]): Input is not a robot"
         raise ValueError
     else:
-        robot.forward(pixels)
-
+        for i in range(0,pixels):
+            robot.forward(1)
+            time.sleep(.050)
 
 def backwardR(robot, pixels=100):
     if not isinstance(robot, Robot):
         print "backward(robot[, pixels]): Input is not a robot"
         raise ValueError
-    if (None == pixels):
-        robot.backward()
-    else:
-        robot.backward(pixels)
+    for i in range(0,pixels):
+        robot.backward(1)
+        time.sleep(.050)
 
 
 def moveToR(robot, x, y):
@@ -1436,7 +1440,7 @@ def makeRectangle(world, pic):
     obstacle = Obstacle(world)
     addRectFilled(pic,20,30,20,25)
     return obstacle
-# used in the book
+
 import Sensor
 import LightSensor
 
@@ -1457,6 +1461,16 @@ def getGroundBrightness(world, picture, robot):
     brightness = (getRed(p)+getGreen(p)+getBlue(p)+40)*.8/3
     print "The color of the ground below the sensor is " + str(brightness)
     
+import Wall
+def addWall(world, pic):
+    if not (isinstance(world, World) or isinstance(pic, Picture)):
+        print "makeWall(world, pic): Input is not a world and a picture"
+        raise ValueError
+    wall = Wall(world)
+    addLine(pic,50,50,200,0)
+    return wall
+
+
 def printNow(text):
     print text
 

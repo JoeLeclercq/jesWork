@@ -55,11 +55,9 @@ public class Obstacle{
         Graphics2D g2 = (Graphics2D) g;
 
         // if the robot is visible
-        if (visible ) {
+        if (visible) {
             // save the current tranform
             AffineTransform oldTransform = g2.getTransform();
-
-
             // draw the shell
             g2.setColor(color);
             g2.fillRect(xPos,yPos, width + xPos, length + yPos);
@@ -81,7 +79,7 @@ public class Obstacle{
      * @param g the graphics context
      */
     public synchronized void drawInfoString(Graphics g) {
-        g.setColor(infoColor );
+        g.setColor(infoColor);
         g.drawString(this.toString(), xPos + (int)(width / 2), yPos);
     }
 }
