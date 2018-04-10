@@ -1343,16 +1343,16 @@ def forwardR(robot, pixels=100):
         print "forward(robot[, pixels]): Input is not a robot"
         raise ValueError
     else:
-        for i in range(0,pixels):
-            robot.forward(1)
+        for i in range(0,pixels/3):
+            robot.forward(3)
             time.sleep(.050)
 
 def backwardR(robot, pixels=100):
     if not isinstance(robot, Robot):
         print "backward(robot[, pixels]): Input is not a robot"
         raise ValueError
-    for i in range(0,pixels):
-        robot.backward(1)
+    for i in range(0,pixels/3):
+        robot.backward(3)
         time.sleep(.050)
 
 
@@ -1437,10 +1437,11 @@ def makeObstacle(pic):
     obstacle = Obstacle(pic)
     return obstacle
     
-def makeRectangle(world, pic):
+def makeRectangle(world):
     if not (isinstance(world, WorldMyEdits)):
         print "makeRectangle(world): Input is not a WorldMyEdits"
         raise ValueError
+    obstacle = Obstacle(world)
     return obstacle
 
 import Sensor
@@ -1453,23 +1454,23 @@ def addLightSensor(robot):
     sensor = LightSensor()
     robot.addSensor(sensor)
 
-def getGroundBrightness(world, picture, robot):
-    if not (isinstance(world, World) or isinstance(picture, Picture) or isInstance(robot, Robot)):
-        print "getGroundBrightness(world, picture, robot): Input is not a world, a picture, or a robot"
+def getGroundBrightness(world, robot):
+    if not (isinstance(world, WorldMyEdits) or isinstance(picture, Picture) or isInstance(robot, Robot)):
+        print "getGroundBrightness(world, robot): Input is not a world, a picture, or a robot"
         raise ValueError
     if not (robot.hasLight()):
         print "This robot does not have a sensor"
-    p = getPixel(picture, getXPosR(robot), getYPosR(robot))
+    p = getPixel(world.getHidden(), getXPosR(robot), getYPosR(robot))
     brightness = (getRed(p)+getGreen(p)+getBlue(p)+40)*.8/3
     print "The color of the ground below the sensor is " + str(brightness)
     
 import Wall
-def addWall(world, pic):
-    if not (isinstance(world, World) or isinstance(pic, Picture)):
-        print "makeWall(world, pic): Input is not a world and a picture"
+def addWall(world):
+    if not (isinstance(world, World)):
+        print "makeWall(world): Input is not a world"
         raise ValueError
     wall = Wall(world)
-    addLine(pic,50,50,200,0)
+    world.getHidden().addLine(wall.getColor(),50,50,200,0)
     return wall
 
 

@@ -44,6 +44,10 @@ public class Wall {
 	public int getDeltaY() {
 		return deltaY;
 	}
+	
+	public Color getColor() {
+		return color;
+	}
 	public synchronized void paintComponent(Graphics g) {
         // cast to 2d object
         Graphics2D g2 = (Graphics2D) g;

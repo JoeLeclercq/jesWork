@@ -3,6 +3,7 @@ import java.awt.*;
 import java.awt.font.*;
 import java.awt.geom.*;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Observer;
 import java.util.Random;
 
@@ -80,7 +81,7 @@ public class SimpleRobot {
     
     private ArrayList<Sensor> sensors = new ArrayList<Sensor>();
     
-    private ArrayList<Wall> wallList = new ArrayList<Wall>();
+    private List<Wall> wallList = new ArrayList<Wall>();
     ////////////////// constructors ///////////////////
 
     /**
@@ -94,9 +95,9 @@ public class SimpleRobot {
         bodyColor = colorArray[numRobots % colorArray.length];
         setPenColor(bodyColor);
         numRobots++;
-//        if(modelDisplay != null) {
-//        	wallList = modelDisplay.
-//        }
+        if(modelDisplay != null) {
+        	wallList = ((WorldMyEdits)modelDisplay).getWallList();
+        }
     }
 
     /**
@@ -123,7 +124,6 @@ public class SimpleRobot {
              (int)(display.getHeight() / 2));
         modelDisplay = display;
         display.addModel(this);
-        System.out.println("this one");
     }
 
     /**
@@ -249,6 +249,7 @@ public class SimpleRobot {
      */
     public void setModelDisplay(ModelDisplay theModelDisplay) {
         this.modelDisplay = theModelDisplay;
+        wallList = ((WorldMyEdits)modelDisplay).getWallList();
     }
 
     /**
@@ -788,5 +789,6 @@ public class SimpleRobot {
         return this.name + " robot at " + this.xPos + ", " +
                this.yPos + " heading " + this.heading + ".";
     }
+
 
 } // end of class

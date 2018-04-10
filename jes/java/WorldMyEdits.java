@@ -7,9 +7,9 @@ public class WorldMyEdits extends World {
 	/** the list of robots in the world */
 	protected List<Robot> robotList = new ArrayList<Robot>();
 	/** the list of obstacles in the world */
-	private ArrayList<Obstacle> obstacleList = new ArrayList<Obstacle>();
+	private List<Obstacle> obstacleList = new ArrayList<Obstacle>();
 	/** the list of walls in the world */
-	private ArrayList<Wall> wallList = new ArrayList<Wall>();
+	private List<Wall> wallList = new ArrayList<Wall>();
 	
 	private Picture hiddenPic = null;
 	
@@ -26,6 +26,7 @@ public class WorldMyEdits extends World {
 		}
 		else if (model instanceof Obstacle){
 			obstacleList.add((Obstacle) model);
+			hiddenPic.addRectFilled(((Obstacle)model).getColor(),((Obstacle) model).getXPos(),((Obstacle) model).getYPos(), ((Obstacle) model).getWidth(), ((Obstacle) model).getLength());
 		}
 		else {
 			wallList.add((Wall) model);
@@ -57,7 +58,7 @@ public class WorldMyEdits extends World {
 			wall = iterator4.next();
 			wall.paintComponent(g);
 		}
-		super.paintComponent(g);
+		//super.paintComponent(g);
 		Iterator<Robot> iterator2 = robotList.iterator();
 		while (iterator2.hasNext()) {
 			robot = iterator2.next();
@@ -65,7 +66,7 @@ public class WorldMyEdits extends World {
 		}
 	}
 	
-	public ArrayList<Wall> getWalls(){
+	public List<Wall> getWallList(){
 		return wallList;
 	}
 	
@@ -73,7 +74,16 @@ public class WorldMyEdits extends World {
 		return robotList;
 	}
 	
-	public Iterator getRobotIterator() {
+	public Picture getHidden(){
+		return hiddenPic;
+	}
+	public Iterator<Robot> getRobotIterator() {
 		return robotList.iterator();
+	}
+	public Iterator<Obstacle> getObstacleIterator() {
+		return obstacleList.iterator();
+	}
+	public Iterator<Wall> getWallIterator() {
+		return wallList.iterator();
 	}
 }

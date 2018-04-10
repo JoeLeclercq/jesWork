@@ -25,7 +25,7 @@ public class Obstacle{
 		yPos = 30;
 		width = 20;
 		length = 25;
-		display.addModel(this);
+		((WorldMyEdits)display).addModel(this);
 	}
 	public Obstacle(int xPos, int yPos, int width, int length, Picture picture) {
 		this.xPos = xPos;
@@ -60,9 +60,9 @@ public class Obstacle{
             AffineTransform oldTransform = g2.getTransform();
             // draw the shell
             g2.setColor(color);
-            g2.fillRect(xPos,yPos, width + xPos, length + yPos);
+            g2.fillRect(xPos,yPos, width, length);
             // draw the info string if the flag is true
-            if (showInfo ) {
+            if (showInfo) {
                 drawInfoString(g2);
             }
 
