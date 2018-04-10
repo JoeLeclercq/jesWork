@@ -1266,16 +1266,12 @@ def getHeading(turtle):
 ## getHeading, getXPos, getYPos
 
 # world methods
-
-import WorldMyEdits
 def makeWorld(width=None, height=None):
     if(width and height):
-        w = WorldMyEdits(width, height)
-        pic = makeEmptyPicture(width, height)
+        w = World(width, height)
     else:
-        w = WorldMyEdits()
-        pic = makeEmptyPicture(640, 480)
-    return w, pic
+        w = World()
+    return w
 
 
 def getTurtleList(world):
@@ -1288,8 +1284,16 @@ def getTurtleList(world):
 
 # let's try the turtles...
 import Robot
-import World
+import WorldMyEdits
 import time
+
+def makeRobotWorld(width=None, height=None):
+    if(width and height):
+        w = WorldMyEdits(width, height)
+    else:
+        w = WorldMyEdits()
+    return w
+    
 
 def turnR(robot, degrees=90):
     if not isinstance(robot, Robot):
@@ -1360,7 +1364,7 @@ def moveToR(robot, x, y):
 
 
 def makeRobot(world):
-    if not (isinstance(world, World) or isinstance(world, Picture)):
+    if not (isinstance(world, WorldMyEdits) or isinstance(world, Picture)):
         print "makeRobot(world): Input is not a world or picture"
         raise ValueError
     robot = Robot(world)
@@ -1418,7 +1422,7 @@ def getHeadingR(robot):
 
 
 def getRobotList(world):
-    if not isinstance(world, World):
+    if not isinstance(world, WorldMyEdits):
         print "getRobotList(world): Input is not a world"
         raise ValueError
     return world.getRobotList()
@@ -1427,18 +1431,16 @@ def getRobotList(world):
 import Obstacle
 
 def makeObstacle(pic):
-    if not (isinstance(world, Picture)):
+    if not (isinstance(pic, Picture)):
         print "makeObstacle(pic): Input is not a picture"
         raise ValueError
     obstacle = Obstacle(pic)
     return obstacle
     
 def makeRectangle(world, pic):
-    if not (isinstance(world, World) or isinstance(pic, Picture)):
-        print "makeObstacle(pic): Input is not a picture"
+    if not (isinstance(world, WorldMyEdits)):
+        print "makeRectangle(world): Input is not a WorldMyEdits"
         raise ValueError
-    obstacle = Obstacle(world)
-    addRectFilled(pic,20,30,20,25)
     return obstacle
 
 import Sensor

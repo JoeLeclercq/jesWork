@@ -94,6 +94,9 @@ public class SimpleRobot {
         bodyColor = colorArray[numRobots % colorArray.length];
         setPenColor(bodyColor);
         numRobots++;
+//        if(modelDisplay != null) {
+//        	wallList = modelDisplay.
+//        }
     }
 
     /**
@@ -120,7 +123,7 @@ public class SimpleRobot {
              (int)(display.getHeight() / 2));
         modelDisplay = display;
         display.addModel(this);
-
+        System.out.println("this one");
     }
 
     /**

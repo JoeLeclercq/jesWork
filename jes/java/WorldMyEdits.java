@@ -1,10 +1,22 @@
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 public class WorldMyEdits extends World {
+	/** the list of robots in the world */
+	protected List<Robot> robotList = new ArrayList<Robot>();
+	/** the list of obstacles in the world */
 	private ArrayList<Obstacle> obstacleList = new ArrayList<Obstacle>();
+	/** the list of walls in the world */
 	private ArrayList<Wall> wallList = new ArrayList<Wall>();
+	
+	private Picture hiddenPic = null;
+	
+	public WorldMyEdits() {
+		super();
+		hiddenPic = new Picture(width, height);
+	}
 	public void addModel(Object model) {
 		if(model instanceof Turtle) {
 			turtleList.add((Turtle) model);
@@ -26,7 +38,6 @@ public class WorldMyEdits extends World {
 		}
 	}
 	public synchronized void paintComponent(Graphics g) {
-		Turtle turtle = null;
 		Robot robot = null;
 		Obstacle obstacle = null;
 		Wall wall = null;
@@ -35,7 +46,7 @@ public class WorldMyEdits extends World {
 		// draw the background image
 		g.drawImage(picture.getImage(), 0, 0, null);
 
-		// loop drawing each turtle on the background image
+		// loop drawing each object on the background image
 		Iterator<Obstacle> iterator3 = obstacleList.iterator();
 		while (iterator3.hasNext()) {
 			obstacle = iterator3.next();
@@ -46,15 +57,23 @@ public class WorldMyEdits extends World {
 			wall = iterator4.next();
 			wall.paintComponent(g);
 		}
-		Iterator<Turtle> iterator = turtleList.iterator();
-		while (iterator.hasNext()) {
-			turtle = iterator.next();
-			turtle.paintComponent(g);
-		}
+		super.paintComponent(g);
 		Iterator<Robot> iterator2 = robotList.iterator();
 		while (iterator2.hasNext()) {
 			robot = iterator2.next();
 			robot.paintComponent(g);
 		}
+	}
+	
+	public ArrayList<Wall> getWalls(){
+		return wallList;
+	}
+	
+	public List<Robot> getRobotList() {
+		return robotList;
+	}
+	
+	public Iterator getRobotIterator() {
+		return robotList.iterator();
 	}
 }

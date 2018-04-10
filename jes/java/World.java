@@ -22,16 +22,13 @@ public class World extends JComponent implements ModelDisplay {
 	protected Color background = Color.white;
 
 	/** the width of the world */
-	private int width = 640;
+	protected int width = 640;
 
 	/** the height of the world */
-	private int height = 480;
+	protected int height = 480;
 
 	/** the list of turtles in the world */
 	protected List<Turtle> turtleList = new ArrayList<Turtle>();
-
-	/** the list of robots in the world */
-	protected List<Robot> robotList = new ArrayList<Robot>();
 
 	/** the JFrame to show this world in */
 	private JFrame frame = new JFrame("World");
@@ -137,7 +134,6 @@ public class World extends JComponent implements ModelDisplay {
 	 */
 	public synchronized void paintComponent(Graphics g) {
 		Turtle turtle = null;
-		Robot robot = null;
 
 		g.setColor(this.background);
 
@@ -149,11 +145,6 @@ public class World extends JComponent implements ModelDisplay {
 		while (iterator.hasNext()) {
 			turtle = iterator.next();
 			turtle.paintComponent(g);
-		}
-		Iterator<Robot> iterator2 = robotList.iterator();
-		while (iterator2.hasNext()) {
-			robot = iterator2.next();
-			robot.paintComponent(g);
 		}
 	}
 
@@ -173,9 +164,6 @@ public class World extends JComponent implements ModelDisplay {
 	public void addModel(Object model) {
 		if(model instanceof Turtle) {
 			turtleList.add((Turtle) model);
-		}
-		else {
-			robotList.add((Robot) model);
 		}
 		if (autoRepaint) {
 			repaint();
@@ -198,9 +186,6 @@ public class World extends JComponent implements ModelDisplay {
 	public void remove(Object model) {
 		if(model instanceof Turtle) {
 			turtleList.remove(model);
-		}
-		else {
-			robotList.remove(model);
 		}
 	}
 
@@ -259,9 +244,6 @@ public class World extends JComponent implements ModelDisplay {
 		return turtleList;
 	}
 
-	public List getRobotList() {
-		return robotList;
-	}
 	
 	/**
 	 * Method to get an iterator on the list of turtles
@@ -271,10 +253,6 @@ public class World extends JComponent implements ModelDisplay {
 		return turtleList.iterator();
 	}
 	
-	public Iterator getRobotIterator() {
-		return robotList.iterator();
-	}
-
 	/**
 	 * Method that returns information about this world
 	 * in the form of a string
@@ -282,7 +260,7 @@ public class World extends JComponent implements ModelDisplay {
 	 */
 	public String toString() {
 		return "A " + getWidth() + " by " + getHeight() +
-				" world with " + turtleList.size() + " turtles in it\n and " + robotList.size() + "robots in it.";
+				" world with " + turtleList.size() + " turtles in it.";
 	}
 
 	/**
