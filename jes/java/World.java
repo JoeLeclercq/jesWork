@@ -16,25 +16,25 @@ public class World extends JComponent implements ModelDisplay {
 	////////////////// fields ///////////////////////
 
 	/** should automatically repaint when model changed */
-	protected boolean autoRepaint = true;
+	private boolean autoRepaint = true;
 
 	/** the background color for the world */
-	protected Color background = Color.white;
+	private Color background = Color.white;
 
 	/** the width of the world */
-	protected int width = 640;
+	private int width = 640;
 
 	/** the height of the world */
-	protected int height = 480;
+	private int height = 480;
 
 	/** the list of turtles in the world */
-	protected List<Turtle> turtleList = new ArrayList<Turtle>();
+	private List<Turtle> turtleList = new ArrayList<Turtle>();
 
 	/** the JFrame to show this world in */
 	private JFrame frame = new JFrame("World");
 
 	/** background picture */
-	protected Picture picture = null;
+	private Picture picture = null;
 
 	private static final long serialVersionUID = 7526471155622776147L;
 
