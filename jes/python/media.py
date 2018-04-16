@@ -1433,6 +1433,13 @@ def getRobotList(world):
         raise ValueError
     return world.getRobotList()
 
+def getDistanceWall(robot):
+    if not isinstance(robot, Robot):
+        print "getHeading(robot): Input is not a robot"
+        raise ValueError
+    distance = robot.getDistanceWall()
+    print "There is no wall until " + str(distance) + "pixels away"
+
 # end of stuff imported for worlds and robots
 import Obstacle
 
