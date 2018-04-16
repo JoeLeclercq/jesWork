@@ -1282,11 +1282,11 @@ def getTurtleList(world):
 
 # end of stuff imported for worlds and turtles
 
-# let's try the turtles...
+# let's try the robots...
 import Robot
 import WorldMyEdits
 import time
-
+import random
 def makeRobotWorld(width=None, height=None):
     if(width and height):
         w = WorldMyEdits(width, height)
@@ -1415,6 +1415,12 @@ def getHeadingR(robot):
         raise ValueError
     return robot.getHeading()
 
+def getDirectionR(robot):
+    if not isinstance(robot, Robot):
+        print "getHeading(robot): Input is not a robot"
+        raise ValueError
+    heading = robot.getHeading()
+    print "The robot is currently facing " + str(random.randInt(heading-5, heading+6)) + " degrees"
 # add these things: turnToFace(turtle, another turtle)
 ## getHeading, getXPos, getYPos
 
@@ -1466,7 +1472,7 @@ def getGroundBrightness(world, robot):
     
 import Wall
 def addWall(world):
-    if not (isinstance(world, World)):
+    if not (isinstance(world, WorldMyEdits)):
         print "makeWall(world): Input is not a world"
         raise ValueError
     wall = Wall(world)

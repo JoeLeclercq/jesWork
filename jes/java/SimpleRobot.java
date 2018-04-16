@@ -776,6 +776,10 @@ public class SimpleRobot {
     	wallList.add(wall);
     }
     
+    public void removeWall(Wall wall) {
+    	wallList.remove(wall);
+    }
+    
     public boolean hasLight() {
     	return lightSensor;
     }
