@@ -73,10 +73,7 @@ public class SimpleRobot {
 
 	/** flag to say if should show robot info */
 	private boolean showInfo = false;
-
-	private boolean lightSensor = false;
-
-	private boolean touchSensor = true;
+	
 	/** the name of this robot */
 	private String name = "No name";
 
@@ -119,12 +116,24 @@ public class SimpleRobot {
 	 * a robot in the middle of it
 	 * @param display the model display
 	 */
-	public SimpleRobot(ModelDisplay display) {
+	public SimpleRobot(ModelDisplay display, boolean touch, boolean gyro, boolean color, boolean ultrasonic) {
 		// invoke constructor that takes x and y
 		this((int)(display.getWidth() / 2),
 				(int)(display.getHeight() / 2));
 		modelDisplay = display;
 		display.addModel(this);
+		if(touch) {
+			sensors.add(new TouchSensor());
+		}
+		if(gyro) {
+			sensors.add(new GyroSensor());
+		}
+		if(color) {
+			sensors.add(new ColorSensor());
+		}
+		if(ultrasonic) {
+			sensors.add(new UltrasonicSensor());
+		}
 	}
 
 	/**
@@ -145,12 +154,24 @@ public class SimpleRobot {
 	 * picture to draw on and will appear in the middle
 	 * @param picture the picture to draw on
 	 */
-	public SimpleRobot(Picture picture) {
+	public SimpleRobot(Picture picture, boolean touch, boolean gyro, boolean color, boolean ultrasonic) {
 		// invoke constructor that takes x and y
 		this((int)(picture.getWidth() / 2),
 				(int)(picture.getHeight() / 2));
 		this.picture = picture;
 		this.visible = true; // default is not to see the robot
+		if(touch) {
+			sensors.add(new TouchSensor());
+		}
+		if(gyro) {
+			sensors.add(new GyroSensor());
+		}
+		if(color) {
+			sensors.add(new ColorSensor());
+		}
+		if(ultrasonic) {
+			sensors.add(new UltrasonicSensor());
+		}
 	}
 
 	//////////////////// methods /////////////////////////
@@ -763,16 +784,6 @@ public class SimpleRobot {
 		g.drawString(this.toString(), xPos + (int)(width / 2), yPos);
 	}
 
-	public void addSensor(Sensor sensor) {
-		if(sensor instanceof LightSensor) {
-			this.lightSensor = true;
-		}
-		//    	else if (sensor instanceof TouchSensor) {
-		//    		this.touchSensor = true;
-		//    	}
-		sensors.add(sensor);
-	}
-
 	public void addWall(Wall wall) {
 		wallList.add(wall);
 	}
@@ -781,9 +792,6 @@ public class SimpleRobot {
 		wallList.remove(wall);
 	}
 
-	public boolean hasLight() {
-		return lightSensor;
-	}
 
 	/**
 	 * Method to return a string with information
@@ -795,10 +803,7 @@ public class SimpleRobot {
 				this.yPos + " heading " + this.heading + ".";
 	}
 
-	public int getDistanceWall() {
-		if(wallList.isEmpty()) {
-			return 255;
-		}
+	public int getDistanceLine() {
 		int testX = xPos;
 		int testY = yPos;
 		int pixels = 5;
@@ -847,4 +852,84 @@ public class SimpleRobot {
 		return min;
 	}
 
+	public int getDistanceWall() {
+		int num = 255;
+		double slope = (Math.round(255 * Math.cos(Math.toRadians(heading)))/Math.round(255 * -Math.sin(Math.toRadians(heading))));
+		double yInt = yPos - slope * xPos;
+		double wallSlope;
+		double wallInt;
+		double[] vals;
+		int xInts;
+		int yInts;
+		int[] lengths = new int[wallList.size()];
+		int count = 0;
+		for(Wall wall: wallList) {
+			vals = wall.getSlopeAndY();
+			if(vals!=null) {
+				wallSlope = vals[0];
+				wallInt = vals[1];
+				xInts = (int)((wallInt-yInt)/(slope-wallSlope));
+				yInts = (int)(slope*xInts+yInt);
+				System.out.println("x wall " + wall.getX());
+				System.out.println("y wall " + wall.getY());
+				System.out.println("x +change wall " + wall.getX()+wall.getDeltaX());
+				System.out.println("y + change wall " + wall.getY()+wall.getDeltaY());
+				System.out.println("wallSLope " + wallSlope);
+				System.out.println("wall int " + wallInt);
+				System.out.println("x where intercept " + xInts);
+				System.out.println("y where intercept " + yInts);
+				if(xInts>wall.getX() && xInts<wall.getX()+wall.getDeltaX() && yInts>wall.getY() && yInts<wall.getY()+wall.getDeltaY()) {
+					lengths[count++] = (int)Math.sqrt((xInts-xPos)*(xInts-xPos)+(yInts-yPos)*(yInts-yPos));
+					System.out.println("List it " + lengths[count-1]);
+				}
+				else {
+					lengths[count++] = 255;
+				}
+			}
+			
+			else {
+				
+			}
+		}
+//		need to calculate the distance between the robot and the given rectangle's at specified angles
+		for(int i = 0; i < lengths.length; i++) {
+			System.out.println("Final for loop" + lengths[i]);
+			if(num > lengths[i]) {
+				num = lengths[i];
+			}
+		}
+		return num;
+	}
+	public boolean hasTouch() {
+		for(Sensor s: sensors) {
+			if(s instanceof TouchSensor) {
+				return true;
+			}
+		}
+		return false;
+	}
+	public boolean hasGyro() {
+		for(Sensor s: sensors) {
+			if(s instanceof GyroSensor) {
+				return true;
+			}
+		}
+		return false;
+	}
+	public boolean hasColor() {
+		for(Sensor s: sensors) {
+			if(s instanceof ColorSensor) {
+				return true;
+			}
+		}
+		return false;
+	}
+	public boolean hasUltrasonic() {
+		for(Sensor s: sensors) {
+			if(s instanceof UltrasonicSensor) {
+				return true;
+			}
+		}
+		return false;
+	}
 } // end of class

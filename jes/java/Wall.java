@@ -13,12 +13,12 @@ public class Wall {
 	private Picture picture = null;
 	private ModelDisplay modelDisplay = null;
 	private Pen pen = new Pen();
-	
+
 	public Wall(ModelDisplay display) {
 		x = 50;
 		y = 50;
 		deltaX = 150;
-		deltaY = 0;
+		deltaY = 30;
 		modelDisplay = display;
 		display.addModel(this);
 	}
@@ -29,42 +29,53 @@ public class Wall {
 		deltaY = 0;
 		this.picture = picture;
 	}
-	
+
 	public int getX() {
 		return x;
 	}
-	
+
 	public int getY() {
 		return y;
 	}
-	
+
 	public int getDeltaX() {
 		return deltaX;
 	}
 	public int getDeltaY() {
 		return deltaY;
 	}
-	
+
 	public Color getColor() {
 		return color;
 	}
 	public synchronized void paintComponent(Graphics g) {
-        // cast to 2d object
-        Graphics2D g2 = (Graphics2D) g;
+		// cast to 2d object
+		Graphics2D g2 = (Graphics2D) g;
 
-        // if the robot is visible
-        if (visible) {
-            // save the current tranform
-            AffineTransform oldTransform = g2.getTransform();
-            // draw the shell
-            g2.setColor(color);
-            g2.drawLine(x,y, deltaX + x, deltaY + y);
+		// if the robot is visible
+		if (visible) {
+			// save the current tranform
+			AffineTransform oldTransform = g2.getTransform();
+			// draw the shell
+			g2.setColor(color);
+			g2.drawLine(x,y, deltaX + x, deltaY + y);
 
-            // reset the tranformation matrix
-            g2.setTransform(oldTransform);
-        }
+			// reset the tranformation matrix
+			g2.setTransform(oldTransform);
+		}
 
-        //  draw the pen
-        pen.paintComponent(g);
-    }
+		//  draw the pen
+		pen.paintComponent(g);
+	}
+
+	public double[] getSlopeAndY() {
+		double[] nums = new double[2];
+		if(deltaX!=0) {
+			nums[0] = (double)deltaY/(double)deltaX;
+			System.out.println(nums[0]);
+			nums[1] = y-nums[0]*x;
+			return nums;
+		}
+		return null;
+	}
 }

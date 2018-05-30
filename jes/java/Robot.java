@@ -35,18 +35,18 @@ public class Robot extends SimpleRobot {
     /** Constructor that takes the model display
      * @param modelDisplay the thing that displays the model
      */
-    public Robot(ModelDisplay modelDisplay) {
+    public Robot(ModelDisplay modelDisplay, boolean touch, boolean gyro, boolean color, boolean ultrasonic) {
         // let the parent constructor handle it
-        super(modelDisplay);
+        super(modelDisplay, touch, gyro, color, ultrasonic);
     }
 
     /**
      * Constructor that takes a picture to draw on
      * @param p the picture to draw on
      */
-    public Robot(Picture p) {
+    public Robot(Picture p, boolean touch, boolean gyro, boolean color, boolean ultrasonic) {
         // let the parent constructor handle it
-        super(p);
+        super(p, touch, gyro, color, ultrasonic);
     }
 
     /////////////////// methods ///////////////////////

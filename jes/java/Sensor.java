@@ -1,13 +1,10 @@
 
 public class Sensor {
-	protected int xRel;
-	protected int yRel;
-	public Sensor() {
-		xRel = 0;
-		yRel = 0;
+	private int portNumber;
+	public Sensor(int portNumber) {
+		this.portNumber = portNumber;
 	}
-	public Sensor(int xRel, int yRel) {
-		this.xRel = xRel;
-		this.yRel = yRel;
+	public int getPortNumber() {
+		return portNumber;
 	}
 }

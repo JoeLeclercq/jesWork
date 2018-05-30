@@ -1367,7 +1367,27 @@ def makeRobot(world):
     if not (isinstance(world, WorldMyEdits) or isinstance(world, Picture)):
         print "makeRobot(world): Input is not a world or picture"
         raise ValueError
-    robot = Robot(world)
+    s = raw_input("Would you like a touch sensor?")
+    if s in ['true', '1', 't', 'y', 'yes', 'yeah', 'yup', 'certainly', 'uh-huh']:
+      bool1 = true
+    else:
+      bool1 = false
+    s = raw_input("Would you like a gyro sensor?")
+    if s in ['true', '1', 't', 'y', 'yes', 'yeah', 'yup', 'certainly', 'uh-huh']:
+      bool2 = true
+    else:
+      bool2 = false
+    s = raw_input("Would you like a color sensor?")
+    if s in ['true', '1', 't', 'y', 'yes', 'yeah', 'yup', 'certainly', 'uh-huh']:
+      bool3 = true
+    else:
+      bool3 = false
+    s = raw_input("Would you like an ultrasonic sensor?")
+    if s in ['true', '1', 't', 'y', 'yes', 'yeah', 'yup', 'certainly', 'uh-huh']:
+      bool4 = true
+    else:
+      bool4 = false
+    robot = Robot(world, bool1, bool2, bool3, bool4)
     return robot
 
 
@@ -1437,8 +1457,11 @@ def getDistanceWall(robot):
     if not isinstance(robot, Robot):
         print "getHeading(robot): Input is not a robot"
         raise ValueError
-    distance = robot.getDistanceWall()
-    print "There is no wall until " + str(distance) + "pixels away"
+    if not (robot.hasUltrasonic()):
+      print "The robot does not have that sensor!"
+    else:
+      distance = robot.getDistanceWall()
+      print "There is no wall until " + str(distance) + "pixels away"
 
 # end of stuff imported for worlds and robots
 import Obstacle
@@ -1460,18 +1483,11 @@ def makeRectangle(world):
 import Sensor
 import LightSensor
 
-def addLightSensor(robot):
-    if not (isinstance(robot, Robot)):
-        print "getGroundBrightness(robot, sensor): Input is not a robot"
-        raise ValueError
-    sensor = LightSensor()
-    robot.addSensor(sensor)
-
 def getGroundBrightness(world, robot):
     if not (isinstance(world, WorldMyEdits) or isinstance(picture, Picture) or isInstance(robot, Robot)):
         print "getGroundBrightness(world, robot): Input is not a world, a picture, or a robot"
         raise ValueError
-    if not (robot.hasLight()):
+    if not (robot.hasColor()):
         print "This robot does not have a sensor"
     p = getPixel(world.getHidden(), getXPosR(robot), getYPosR(robot))
     brightness = (getRed(p)+getGreen(p)+getBlue(p)+40)*.8/3
