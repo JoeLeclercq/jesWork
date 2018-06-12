@@ -77,8 +77,14 @@ public class SimpleRobot {
 	/** the name of this robot */
 	private String name = "No name";
 
-	private ArrayList<Sensor> sensors = new ArrayList<Sensor>();
-
+	private TouchSensor touchSensor = null;
+	
+	private GyroSensor gyroSensor = null;
+	
+	private ColorSensor colorSensor = null;
+	
+	private UltrasonicSensor ultrasonicSensor = null;
+	
 	private List<Wall> wallList = new ArrayList<Wall>();
 	////////////////// constructors ///////////////////
 
@@ -123,16 +129,16 @@ public class SimpleRobot {
 		modelDisplay = display;
 		display.addModel(this);
 		if(touch) {
-			sensors.add(new TouchSensor());
+			touchSensor = new TouchSensor();
 		}
 		if(gyro) {
-			sensors.add(new GyroSensor());
+			gyroSensor = new GyroSensor(heading);
 		}
 		if(color) {
-			sensors.add(new ColorSensor());
+			colorSensor = new ColorSensor();
 		}
 		if(ultrasonic) {
-			sensors.add(new UltrasonicSensor());
+			ultrasonicSensor = new UltrasonicSensor();
 		}
 	}
 
@@ -161,16 +167,16 @@ public class SimpleRobot {
 		this.picture = picture;
 		this.visible = true; // default is not to see the robot
 		if(touch) {
-			sensors.add(new TouchSensor());
+			touchSensor = new TouchSensor();
 		}
 		if(gyro) {
-			sensors.add(new GyroSensor());
+			gyroSensor = new GyroSensor(heading);
 		}
 		if(color) {
-			sensors.add(new ColorSensor());
+			colorSensor = new ColorSensor();
 		}
 		if(ultrasonic) {
-			sensors.add(new UltrasonicSensor());
+			ultrasonicSensor = new UltrasonicSensor();
 		}
 	}
 
@@ -898,38 +904,25 @@ public class SimpleRobot {
 				num = lengths[i];
 			}
 		}
-		return num;
+		Random rand = new Random();
+		return (int) (num - ultrasonicSensor.getError() + rand.nextDouble() * ultrasonicSensor.getError()*2);
+	}
+	
+	public double getGyro() {
+		double add = gyroSensor.getHeading() + heading;
+		double diff = (heading-gyroSensor.getHeading() + 360) %360;
+		return (add%360==add%180?diff:-1*(diff-180));
 	}
 	public boolean hasTouch() {
-		for(Sensor s: sensors) {
-			if(s instanceof TouchSensor) {
-				return true;
-			}
-		}
-		return false;
+		return touchSensor!=null;
 	}
 	public boolean hasGyro() {
-		for(Sensor s: sensors) {
-			if(s instanceof GyroSensor) {
-				return true;
-			}
-		}
-		return false;
+		return gyroSensor!=null;
 	}
 	public boolean hasColor() {
-		for(Sensor s: sensors) {
-			if(s instanceof ColorSensor) {
-				return true;
-			}
-		}
-		return false;
+		return colorSensor!=null;
 	}
 	public boolean hasUltrasonic() {
-		for(Sensor s: sensors) {
-			if(s instanceof UltrasonicSensor) {
-				return true;
-			}
-		}
-		return false;
+		return ultrasonicSensor!=null;
 	}
 } // end of class

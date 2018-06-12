@@ -1,3 +1,4 @@
+
 <html><body>
 API Documentation for functions in media.py
 _
@@ -1552,5 +1553,350 @@ def writeTempSound(sound):
 </pre>
 This takes in a sound and writes it out to a file called temp.wav in C:\temp\.
 _
-
+makeRobotWorld|<b>makeRobotWorld</b>([width, height]):<br>
+<font color=blue>width</font>: the width for your new world (optional)<br>
+<font color=blue>height</font>: the height for your new world (optional)<br>
+Returns a new world of the specified size, where you can put robots. Default size is 640x480.<br>
+<b>Example</b>
+<pre>
+def createWorld():
+  w = makeRobotWorld()
+</pre>
+This creates a world with the default size (640x480).
+<pre>
+def createSmallWorld():
+  w = makeRobotWorld(400, 400)
+</pre>
+This creates a world of size 400x400.
+_
+turnR|<b>turnR</b>(robot[, degrees]):<br>
+<font color=blue>robot</font>: the robot to operate on<br>
+<font color=blue>degrees</font>: how many degrees to turn (optional)<br>
+Turns the robot; positive numbers of degrees mean turning to the robot's right, negative numbers of degrees mean turning to the robot's left. Default is 90 degrees.<br>
+<b>Example:</b>
+<pre>
+def turnRobotRight():
+  w = makeRobotWorld()
+  r = makeRobot(w)
+  turnR(r)
+</pre>
+This will create a robot and turn it right 90 degrees.
+<pre>
+def turnRobotAround():
+  w = makeRobotWorld()
+  r = makeRobot(w)
+  turnR(r, 180)
+</pre>
+This will create a robot and turn it 180 degrees.
+_
+turnLeft|<b>turnLeftR</b>(robot):<br>
+<font color=blue>robot</font>: the robot to operate on<br>
+Turns the robot left 90 degrees.<br>
+<b>Example:</b>
+<pre>
+def makeLeftSquare():
+  w = makeRobotWorld()
+  r = makeRobot(w)
+  for x in range(0,4):
+    forward(r)
+    turnLeftR(r)
+</pre>
+This will create a robot and draw a 100x100 square to the upper-left of the middle of the world.
+_
+turnRight|<b>turnRightR</b>(robot):<br>
+<font color=blue>robot</font>: the robot to operate on<br>
+Turns the robot right 90 degrees.<br>
+<b>Example:</b>
+<pre>
+def makeRightSquare():
+  w = makeRobotWorld()
+  r = makeRobot(w)
+  for x in range(0,4):
+    forward(r)
+    turnRightR(r)
+</pre>
+This will create a robot and draw a 100x100 square to the upper-right of the middle of the world.
+_
+turnToFace|<b>turnToFace</b>(robot, x[, y]):<br>
+<font color=blue>robot</font>: the robot to operate on<br>
+<font color=blue>x</font>: the x coordinate in the world (or a robot in the world)<br>
+<font color=blue>y</font>: the y coordinate in the world (optional)<br>
+Makes the robot look towards point (x, y) or towards robot x if y is unspecified.<br>
+<b>Example:</b>
+<pre>
+def robotEscape():
+  w = makeRobotWorld()
+  r = makeRobot(w)
+  turnToFaceR(r, 0, 0)
+  forwardR(r, 400)
+</pre>
+This creates a robot which then faces the origin (0,0) and moves forward 400 pixels.
+<pre>
+def robotDuel():
+  w = makeRobotWorld()
+  r = makerobot(w)
+  turnR(r)
+  r2 = makeRobot(w)
+  turnR(r2, 180)
+  for robot in getRobotList(w):
+    forward(robot, 50)
+  turnToFaceR(r, r2)
+  turnToFaceR(r2, r)
+</pre>
+This creates a world with two robots. The first robot turns 90 degrees and the second robot turns around 180 degrees. Then both robots move forward 50 pixels and turn to face each other.
+_
+forwardR|<b>forwardR</b>(robot[, distance]):<br>
+<font color=blue>robot</font>: the robot to operate on<br>
+<font color=blue>distance</font>: how far to go, in pixels (optional)<br>
+Moves the robot in the direction it's facing. Default distance is 100 pixels.<br>
+<b>Example</b>
+<pre>
+def moveRobotForward50():
+  w = makeRobotWorld()
+  r = makeRobot(w)
+  forwardR(r, 50)
+</pre>
+This creates a new robot and moves it forward 50 pixels.
+<pre>
+def moveRobotForward100():
+  w = makeRobotWorld()
+  r = makeRobot(w)
+  forwardR(r)
+</pre>
+This creates a new robot and moves it forward the default number of pixels (100).
+_
+backwardR|<b>backwardR</b>(robot[, distance]):<br>
+<font color=blue>robot</font>: the robot to operate on<br>
+<font color=blue>distance</font>: how far to go, in pixels (optional)<br>
+Moves the robot opposite to the direction it's facing. Default distance is 100 pixels.<br>
+<b>Example</b>
+<pre>
+def moveTurtleBackward50():
+  w = makeRobotWorld()
+  r = makeRobot(w)
+  backwardR(r, 50)
+</pre>
+This creates a new robot and moves it backward 50 pixels.
+<pre>
+def moveTurtleBackward100():
+  w = makeRobotWorld()
+  r = makeRobot(w)
+  backwardR(r)
+</pre>
+This creates a new robot and moves it backward the default number of pixels (100).
+_
+getXPosR|<b>getXPosR</b>(robot):<br>
+<font color=blue>robot</font>: the robot to get the x position of<br>
+<font color=blue>returns</font>: the x position of the robot<br>
+Returns the x coordinate of the robot's location.<br>
+<b>Example:</b>
+<pre>
+def getDefaultRobotXPos():
+  w = makeRobotWorld()
+  r = makeRobot(w)
+  return getXPosR(r)
+</pre>
+This will create a world of default size (640x480), place a robot in the center, and return its x position (320).
+_
+getYPosR|<b>getYPosR</b>(robot):<br>
+<font color=blue>robot</font>: the robot to get the y position of<br>
+<font color=blue>returns</font>: the y position of the robot<br>
+Returns the y coordinate of the robot's location.<br>
+<b>Example:</b>
+<pre>
+def getDefaultRobotYPos():
+  w = makeRobotWorld()
+  r = makeRobot(w)
+  return getYPosR(r)
+</pre>
+This will create a world of default size (640x480), place a robot in the center, and return its y position (240).
+_
+moveToR|<b>moveToR</b>(robot, x, y):<br>
+<font color=blue>robot</font>: the robot to operate on<br>
+<font color=blue>x</font>: the x coordinate in the world to move to<br>
+<font color=blue>y</font>: the y coordinate in the world to move to<br>
+Moves the robot to the specified location. If the robot's pen is down, it
+draws a line from its old position to the new one.<br>
+<b>Example:</b>
+<pre>
+def moveRobotTo():
+  w = makeRobotWorld()
+  r = makeRobot(w)
+  moveToR(r, 150, 150)
+</pre>
+This will create a new robot and move it to the coordinates (150,150) in the world.
+_
+penDownR|<b>penDownR</b>(robot):<br>
+<font color=blue>robot</font>: the robot to operate on<br>
+Makes it so the robot leaves a trail when it moves. Default is down.<br>
+<b>Example:</b>
+<pre>
+def robotSquare():
+  w = makeRobotWorld()
+  r = makeRobot(w)
+  for x in range(0,4):
+    penUpR(r)
+    forwardR(r)
+    turnRightR(r)
+    penDownR(r)
+    forwardR(r)
+</pre>
+This will create a robot and draw a 200x200 square with only half of each edge showing.
+_
+penUpR|<b>penUpR</b>(robot):<br>
+<font color=blue>robot</font>: the robot to operate on<br>
+Makes it so the robot does not leave a trail when it moves. Default is down.<br>
+<b>Example:</b>
+<pre>
+def robotSquare():
+  w = makeRobotWorld()
+  r = makeRobot(w)
+  for x in range(0,4):
+    penUpR(r)
+    forwardR(r)
+    turnRightR(r)
+    penDownR(r)
+    forwardR(r)
+</pre>
+This will create a robot and draw a 200x200 square with only half of each edge showing.
+_
+dropR|<b>dropR</b>(robot, picture):<br>
+<font color=blue>robot</font>: the robot that will do the dropping<br>
+<font color=blue>picture</font>: the picture that the robot will drop<br>
+The robot drops a picture where it is currently sitting, rotated so that
+the top of the picture points where the robot is facing. This, for
+example, is one way to flip a picture upside-down.<br>
+<b>Example:</b>
+<pre>
+def dropUpsidedownPic():
+  w = makeRobotWorld()
+  r = makeRobot(w)
+  moveToR(r, 640, 480)
+  pic = makePicture(pickAFile())
+  turnR(r, 180)
+  dropR(r, pic)
+</pre>
+This allows the user to select a picture file, moves the robot and drops the picture upside-down. The upper-left corner of the picture will be placed in the lower-right corner of the world.
+_
+getHeadingR|<b>getHeadingR</b>(robot):<br>
+<font color=blue>robot</font>: the robot to get the heading of<br>
+<font color=blue>returns</font>: a floating point number representing the heading of the robot<br>
+Returns the degrees of the direction the robot is facing. (0 degrees is straight up, and heading increases clockwise)<br>
+<b>Example:</b>
+<pre>
+def robotRightTriangleAngle():
+  w = makeRobotWorld()
+  r = makeRobot(w)
+  r2 = makeRobot(w)
+  turnRightR(r2)
+  forwardR(r2)
+  turnLeftR(r2)
+  forwardR(r2, 50)
+  turnToFaceR(r, r2)
+  return getHeadingR(r)
+</pre>
+This will calculate the larger of the two acute angles in the right triangle with side lengths 50 and 100 using robots. (~63.43 degrees)
+_
+getRobotList|<b>getRobotList</b>(world):<br>
+<font color=blue>world</font>: the world to get the robots from<br>
+<font color=blue>returns</font>: the list of robots in the world<br>
+Returns a list of all robots in the specified world. (You could, for example, tell each one to do something)<br>
+<b>Example:</b>
+<pre>
+def robotDuel():
+  w = makeRobotWorld()
+  r = makeRobot(w)
+  r2 = makeRobot(w)
+  turnR(r2, 180)
+  for robot in getRobotList(w):
+    forwardR(robot, 50)
+    turnR(robot, 180)
+</pre>
+This creates a world with two robots. The second robot turns around 180 degrees, then both robots move forward 50 pixels and turn to face each other.
+_
+makeRobot|<b>makeRobot</b>(world):<br>
+<font color=blue>world</font>: a world to put the robot in<br>
+<font color=blue>returns</font>: the new robot<br>
+Makes a robot and returns it<br>
+<b>Example:</b>
+<pre>
+def robotForward():
+  w = makeRobotWorld()
+  r = makeRobot(w)
+  forwardR(r)
+</pre>
+This creates a new robot and moves it forward 100 pixels.
+_
+getGyro|<b>getGyro</b>(robot):<br>
+<font color=blue>robot</font>: the robot to get the gyro reading from<br>
+<font color=blue>returns</font>: a floating point number representing the value received from the gyro sensor<br>
+Returns the degrees of the direction the robot is facing. (0 degrees is were it was facing at creation or when it was reset)<br>
+<b>Example:</b>
+<pre>
+def robotGyro():
+  w = makeRobotWorld()
+  r = makeRobot(w)
+  turnRightR(r)
+  return getGyro(r)
+</pre>
+This will calculate the angle that the robot has turned since being created, which is 90 degrees.
+_
+getUltrasonic|<b>getUltrasonic</b>(robot):<br>
+<font color=blue>robot</font>: the robot to get the ultrasonic reading from<br>
+<font color=blue>returns</font>: a floating point number representing the value received from the ultrasonic sensor<br>
+Returns the distance between the robot and the nearest wall in front of it.<br>
+<b>Example:</b>
+<pre>
+def robotUltrasonic():
+  w = makeRobotWorld()
+  r = makeRobot(w)
+  addWall(w)
+  forwardR(r)
+  turnLeftR(r)
+  forwardR(r)
+  forwardR(r)
+  turnR(r,120)
+  return getUltrasonic(r)
+</pre>
+This will calculate the angle that the robot has turned since being created, which is 90 degrees.
+_
+makeRectangle|<b>makeRectangle</b>(world, x, y, width, height[, color]):<br>
+<font color=blue>world</font>: the world to add a rectangle on the ground to<br>
+<font color=blue>x</font>: the starting x-position of the rectangle<br>
+<font color=blue>y</font>: the starting y-position of the rectangle<br>
+<font color=blue>width</font>: the width of the rectangle<br>
+<font color=blue>height</font>: the height of the rectangle<br>
+<font color=blue>color</font>: the color of the rectangle on the ground (optional)<br>
+<font color=blue>returns</font>: the rectangle that was drawn on the ground<br>
+Draws a rectangle on the ground.<br>
+<b>Example:</b>
+<pre>
+def robotDefaultObstacle():
+  w = makeRobotWorld()
+  o = makeRectangle(w, 100, 100, 30, 30)
+</pre>
+This will create a robot world and then draw a rectangle with the default color.
+<pre>
+def robotObstacle():
+  w = makeRobotWorld()
+  o = makeRectangle(w, 100, 100, 30, 30, makeColor(0,0,0))
+</pre>
+This will create a robot world and then draw a rectangle of dimension 30x30 starting at (100,100).
+_
+addWall|<b>addWall</b>(world, x, y, width, height):<br>
+<font color=blue>world</font>: the world to add a rectangle on the ground to<br>
+<font color=blue>x</font>: the starting x-position of the wall<br>
+<font color=blue>y</font>: the starting y-position of the wall<br>
+<font color=blue>width</font>: the width of the wall<br>
+<font color=blue>height</font>: the height of the wall<br>
+<font color=blue>returns</font>: the wall that was added to the world<br>
+Adds a rectangle to the world and draws a line signifying this.<br>
+<b>Example:</b>
+<pre>
+def addAWall():
+  w = makeRobotWorld()
+  a = addWall(w, 100, 100, 30, 30)
+</pre>
+This will create a robot world and then add a wall that the robot cannot travel through.
+_
 </body></html>

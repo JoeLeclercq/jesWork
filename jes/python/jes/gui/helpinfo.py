@@ -21,7 +21,7 @@ JES_API_SECTIONS = [
     ('Robots', ['turnR', 'turnLeftR', 'turnRightR', 'forwardR', 'backwardR', 'moveToR', 'turnToFaceR',
                  'makeRobot', 'penUpR', 'penDownR', 'makeRobotWorld',
                  'getRobotList', 'dropR', 'getHeadingR', 'getXPosR', 'getYPosR', 'addWall', 'makeRectangle',
-                 'addLightSensor', 'getGroundBrightness']),
+                 'getUltrasonic', 'getGroundBrightness', 'getGyro']),
     ('Turtles', ['turn', 'turnLeft', 'turnRight', 'forward', 'backward', 'moveTo', 'turnToFace',
                  'makeTurtle', 'penUp', 'penDown', 'makeWorld',
                  'getTurtleList', 'drop', 'getHeading', 'getXPos', 'getYPos']),

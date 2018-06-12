@@ -1368,22 +1368,22 @@ def makeRobot(world):
         print "makeRobot(world): Input is not a world or picture"
         raise ValueError
     s = raw_input("Would you like a touch sensor?")
-    if s in ['true', '1', 't', 'y', 'yes', 'yeah', 'yup', 'certainly', 'uh-huh']:
+    if s in ['true', '1', 't', 'y', 'yes', 'yeah', 'yup']:
       bool1 = true
     else:
       bool1 = false
     s = raw_input("Would you like a gyro sensor?")
-    if s in ['true', '1', 't', 'y', 'yes', 'yeah', 'yup', 'certainly', 'uh-huh']:
+    if s in ['true', '1', 't', 'y', 'yes', 'yeah', 'yup']:
       bool2 = true
     else:
       bool2 = false
     s = raw_input("Would you like a color sensor?")
-    if s in ['true', '1', 't', 'y', 'yes', 'yeah', 'yup', 'certainly', 'uh-huh']:
+    if s in ['true', '1', 't', 'y', 'yes', 'yeah', 'yup']:
       bool3 = true
     else:
       bool3 = false
     s = raw_input("Would you like an ultrasonic sensor?")
-    if s in ['true', '1', 't', 'y', 'yes', 'yeah', 'yup', 'certainly', 'uh-huh']:
+    if s in ['true', '1', 't', 'y', 'yes', 'yeah', 'yup']:
       bool4 = true
     else:
       bool4 = false
@@ -1435,12 +1435,6 @@ def getHeadingR(robot):
         raise ValueError
     return robot.getHeading()
 
-def getDirectionR(robot):
-    if not isinstance(robot, Robot):
-        print "getHeading(robot): Input is not a robot"
-        raise ValueError
-    heading = robot.getHeading()
-    print "The robot is currently facing " + str(random.randInt(heading-5, heading+6)) + " degrees"
 # add these things: turnToFace(turtle, another turtle)
 ## getHeading, getXPos, getYPos
 
@@ -1452,8 +1446,17 @@ def getRobotList(world):
         print "getRobotList(world): Input is not a world"
         raise ValueError
     return world.getRobotList()
-
-def getDistanceWall(robot):
+    
+def getGyro(robot):
+    if not isinstance(robot, Robot):
+        print "getHeading(robot): Input is not a robot"
+        raise ValueError
+    if not (robot.hasGyro()):
+        print "The robot does not have that sensor!"
+    else:
+        return robot.getGyro()
+        
+def getUltrasonic(robot):
     if not isinstance(robot, Robot):
         print "getHeading(robot): Input is not a robot"
         raise ValueError
@@ -1466,13 +1469,6 @@ def getDistanceWall(robot):
 # end of stuff imported for worlds and robots
 import Obstacle
 
-def makeObstacle(pic):
-    if not (isinstance(pic, Picture)):
-        print "makeObstacle(pic): Input is not a picture"
-        raise ValueError
-    obstacle = Obstacle(pic)
-    return obstacle
-    
 def makeRectangle(world):
     if not (isinstance(world, WorldMyEdits)):
         print "makeRectangle(world): Input is not a WorldMyEdits"
