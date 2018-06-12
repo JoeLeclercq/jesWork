@@ -100,7 +100,7 @@ public class SimpleRobot {
 		setPenColor(bodyColor);
 		numRobots++;
 		if(modelDisplay != null) {
-			wallList = ((WorldMyEdits)modelDisplay).getWallList();
+			wallList = ((RobotWorld)modelDisplay).getWallList();
 		}
 	}
 
@@ -277,7 +277,7 @@ public class SimpleRobot {
 	 */
 	public void setModelDisplay(ModelDisplay theModelDisplay) {
 		this.modelDisplay = theModelDisplay;
-		wallList = ((WorldMyEdits)modelDisplay).getWallList();
+		wallList = ((RobotWorld)modelDisplay).getWallList();
 	}
 
 	/**

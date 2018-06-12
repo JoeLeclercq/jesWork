@@ -1284,14 +1284,14 @@ def getTurtleList(world):
 
 # let's try the robots...
 import Robot
-import WorldMyEdits
+import RobotWorld
 import time
 import random
 def makeRobotWorld(width=None, height=None):
     if(width and height):
-        w = WorldMyEdits(width, height)
+        w = RobotWorld(width, height)
     else:
-        w = WorldMyEdits()
+        w = RobotWorld()
     return w
     
 
@@ -1364,7 +1364,7 @@ def moveToR(robot, x, y):
 
 
 def makeRobot(world):
-    if not (isinstance(world, WorldMyEdits) or isinstance(world, Picture)):
+    if not (isinstance(world, RobotWorld) or isinstance(world, Picture)):
         print "makeRobot(world): Input is not a world or picture"
         raise ValueError
     s = raw_input("Would you like a touch sensor?")
@@ -1442,7 +1442,7 @@ def getHeadingR(robot):
 
 
 def getRobotList(world):
-    if not isinstance(world, WorldMyEdits):
+    if not isinstance(world, RobotWorld):
         print "getRobotList(world): Input is not a world"
         raise ValueError
     return world.getRobotList()
@@ -1470,7 +1470,7 @@ def getUltrasonic(robot):
 import Obstacle
 
 def makeRectangle(world):
-    if not (isinstance(world, WorldMyEdits)):
+    if not (isinstance(world, RobotWorld)):
         print "makeRectangle(world): Input is not a WorldMyEdits"
         raise ValueError
     obstacle = Obstacle(world)
@@ -1480,7 +1480,7 @@ import Sensor
 import LightSensor
 
 def getGroundBrightness(world, robot):
-    if not (isinstance(world, WorldMyEdits) or isinstance(picture, Picture) or isInstance(robot, Robot)):
+    if not (isinstance(world, RobotWorld) or isinstance(picture, Picture) or isInstance(robot, Robot)):
         print "getGroundBrightness(world, robot): Input is not a world, a picture, or a robot"
         raise ValueError
     if not (robot.hasColor()):
@@ -1491,7 +1491,7 @@ def getGroundBrightness(world, robot):
     
 import Wall
 def addWall(world):
-    if not (isinstance(world, WorldMyEdits)):
+    if not (isinstance(world, RobotWorld)):
         print "makeWall(world): Input is not a world"
         raise ValueError
     wall = Wall(world)
