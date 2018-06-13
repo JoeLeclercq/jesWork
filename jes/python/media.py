@@ -1370,24 +1370,32 @@ def makeRobot(world):
     s = raw_input("Would you like a touch sensor?")
     if s in ['true', '1', 't', 'y', 'yes', 'yeah', 'yup']:
       bool1 = true
+      port = input("What port would you like to use? (Enter 0 for default)")
     else:
       bool1 = false
+      port = 0
     s = raw_input("Would you like a gyro sensor?")
     if s in ['true', '1', 't', 'y', 'yes', 'yeah', 'yup']:
       bool2 = true
+      port2 = input("What port would you like to use? (Enter 0 for default)")
     else:
       bool2 = false
+      port2 = 0
     s = raw_input("Would you like a color sensor?")
     if s in ['true', '1', 't', 'y', 'yes', 'yeah', 'yup']:
       bool3 = true
+      port3 = input("What port would you like to use? (Enter 0 for default)")
     else:
       bool3 = false
+      port3 = 0
     s = raw_input("Would you like an ultrasonic sensor?")
     if s in ['true', '1', 't', 'y', 'yes', 'yeah', 'yup']:
       bool4 = true
+      port4 = input("What port would you like to use? (Enter 0 for default)")
     else:
       bool4 = false
-    robot = Robot(world, bool1, bool2, bool3, bool4)
+      port4 = 0
+    robot = Robot(world, bool1, port, bool2, port2, bool3, port3, bool4, port4)
     return robot
 
 
@@ -1469,11 +1477,11 @@ def getUltrasonic(robot):
 # end of stuff imported for worlds and robots
 import Obstacle
 
-def makeRectangle(world):
+def makeRectangle(world, x, y, width, height, color=makeColor(0,0,0)):
     if not (isinstance(world, RobotWorld)):
         print "makeRectangle(world): Input is not a WorldMyEdits"
         raise ValueError
-    obstacle = Obstacle(world)
+    obstacle = Obstacle(world, x, y, width, height, color)
     return obstacle
 
 import Sensor
@@ -1490,12 +1498,12 @@ def getGroundBrightness(world, robot):
     print "The color of the ground below the sensor is " + str(brightness)
     
 import Wall
-def addWall(world):
+def addWall(world, x, y, width, height):
     if not (isinstance(world, RobotWorld)):
         print "makeWall(world): Input is not a world"
         raise ValueError
-    wall = Wall(world)
-    world.getHidden().addLine(wall.getColor(),50,50,200,0)
+    wall = Wall(world, x, y, width, height)
+    world.getHidden().addLine(wall.getColor(),x, y, width, height)
     return wall
 
 

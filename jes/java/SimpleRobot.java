@@ -9,7 +9,7 @@ import java.util.Random;
 import java.lang.Math;
 
 /**
- * Class that represents a Logo-style robot.  The robot
+ * Class that represents a robot.  The robot
  * starts off facing north.
  * A robot can have a name, has a starting x and y position,
  * has a heading, has a width, has a height, has a visible
@@ -22,9 +22,8 @@ import java.lang.Math;
  * <br>
  * Copyright Georgia Institute of Technology 2004
  * @author Barb Ericson ericson@cc.gatech.edu
+ * @author Joseph Leclercq leclercqj8@students.rowan.edu
  *
- * Synchronization changes merged by Buck Scharfnorth 22 May 2008
- * drop method left unchanged for now
  */
 public class SimpleRobot {
 	///////////////// fields ////////////////////////
@@ -73,18 +72,23 @@ public class SimpleRobot {
 
 	/** flag to say if should show robot info */
 	private boolean showInfo = false;
-	
+
 	/** the name of this robot */
 	private String name = "No name";
 
-	private TouchSensor touchSensor = null;
-	
-	private GyroSensor gyroSensor = null;
-	
-	private ColorSensor colorSensor = null;
-	
-	private UltrasonicSensor ultrasonicSensor = null;
-	
+	/** Sensor port 1  */
+	private Sensor sensor1 = null;
+
+	/** Sensor port 2  */
+	private Sensor sensor2 = null;
+
+	/** Sensor port 3  */
+	private Sensor sensor3 = null;
+
+	/** Sensor port 4  */
+	private Sensor sensor4 = null;
+
+	private Sensor[] sensors = new Sensor[4];
 	private List<Wall> wallList = new ArrayList<Wall>();
 	////////////////// constructors ///////////////////
 
@@ -122,23 +126,43 @@ public class SimpleRobot {
 	 * a robot in the middle of it
 	 * @param display the model display
 	 */
-	public SimpleRobot(ModelDisplay display, boolean touch, boolean gyro, boolean color, boolean ultrasonic) {
+	public SimpleRobot(ModelDisplay display, boolean touch, int port, boolean gyro, int port2, boolean color, int port3, boolean ultrasonic, int port4) {
 		// invoke constructor that takes x and y
 		this((int)(display.getWidth() / 2),
 				(int)(display.getHeight() / 2));
 		modelDisplay = display;
 		display.addModel(this);
 		if(touch) {
-			touchSensor = new TouchSensor();
+			if(port != 0){
+				sensors[port-1] = new TouchSensor();
+			}
+			else {
+				sensors[0] = new TouchSensor();
+			}
 		}
 		if(gyro) {
-			gyroSensor = new GyroSensor(heading);
+			if(port != 0 && sensors[port2-1] == null) {
+				sensors[port2-1] = new GyroSensor(heading);
+			}
+			else {
+				sensors[1] = new GyroSensor(heading);
+			}
 		}
 		if(color) {
-			colorSensor = new ColorSensor();
+			if(port != 0 && sensors[port3-1] == null) {
+				sensors[port3-1] = new ColorSensor();
+			}
+			else {
+				sensors[2] = new ColorSensor();
+			}
 		}
 		if(ultrasonic) {
-			ultrasonicSensor = new UltrasonicSensor();
+			if(port != 0 && sensors[port4-1] == null) {
+				sensors[port4-1] = new UltrasonicSensor();
+			}
+			else {
+				sensors[3] = new UltrasonicSensor();
+			}
 		}
 	}
 
@@ -160,25 +184,25 @@ public class SimpleRobot {
 	 * picture to draw on and will appear in the middle
 	 * @param picture the picture to draw on
 	 */
-	public SimpleRobot(Picture picture, boolean touch, boolean gyro, boolean color, boolean ultrasonic) {
-		// invoke constructor that takes x and y
-		this((int)(picture.getWidth() / 2),
-				(int)(picture.getHeight() / 2));
-		this.picture = picture;
-		this.visible = true; // default is not to see the robot
-		if(touch) {
-			touchSensor = new TouchSensor();
-		}
-		if(gyro) {
-			gyroSensor = new GyroSensor(heading);
-		}
-		if(color) {
-			colorSensor = new ColorSensor();
-		}
-		if(ultrasonic) {
-			ultrasonicSensor = new UltrasonicSensor();
-		}
-	}
+//	public SimpleRobot(Picture picture, boolean touch, boolean gyro, boolean color, boolean ultrasonic) {
+//		// invoke constructor that takes x and y
+//		this((int)(picture.getWidth() / 2),
+//				(int)(picture.getHeight() / 2));
+//		this.picture = picture;
+//		this.visible = true; // default is not to see the robot
+//		if(touch) {
+//			touchSensor = new TouchSensor();
+//		}
+//		if(gyro) {
+//			gyroSensor = new GyroSensor(heading);
+//		}
+//		if(color) {
+//			colorSensor = new ColorSensor();
+//		}
+//		if(ultrasonic) {
+//			ultrasonicSensor = new UltrasonicSensor();
+//		}
+//	}
 
 	//////////////////// methods /////////////////////////
 
@@ -869,6 +893,12 @@ public class SimpleRobot {
 		int yInts;
 		int[] lengths = new int[wallList.size()];
 		int count = 0;
+		UltrasonicSensor sens = null;
+		for(int i = 0; i < sensors.length; i++) {
+			if(sensors[i] instanceof UltrasonicSensor) {
+				sens = (UltrasonicSensor) sensors[i];
+			}
+		}
 		for(Wall wall: wallList) {
 			vals = wall.getSlopeAndY();
 			if(vals!=null) {
@@ -892,12 +922,12 @@ public class SimpleRobot {
 					lengths[count++] = 255;
 				}
 			}
-			
+
 			else {
-				
+
 			}
 		}
-//		need to calculate the distance between the robot and the given rectangle's at specified angles
+		//		need to calculate the distance between the robot and the given rectangle's at specified angles
 		for(int i = 0; i < lengths.length; i++) {
 			System.out.println("Final for loop" + lengths[i]);
 			if(num > lengths[i]) {
@@ -905,24 +935,50 @@ public class SimpleRobot {
 			}
 		}
 		Random rand = new Random();
-		return (int) (num - ultrasonicSensor.getError() + rand.nextDouble() * ultrasonicSensor.getError()*2);
+		return (int) (num - sens.getError() + rand.nextDouble() * sens.getError()*2);
 	}
-	
+
 	public double getGyro() {
-		double add = gyroSensor.getHeading() + heading;
-		double diff = (heading-gyroSensor.getHeading() + 360) %360;
+		GyroSensor sens = null;
+		for(int i = 0; i < sensors.length; i++) {
+			if(sensors[i] instanceof GyroSensor) {
+				sens = (GyroSensor) sensors[i];
+			}
+		}
+		double add = sens.getHeading() + heading;
+		double diff = (heading-sens.getHeading() + 360) %360;
 		return (add%360==add%180?diff:-1*(diff-180));
 	}
 	public boolean hasTouch() {
-		return touchSensor!=null;
+		for(int i = 0; i < sensors.length; i++) {
+			if(sensors[i] instanceof TouchSensor) {
+				return true;
+			}
+		}
+		return false;
 	}
 	public boolean hasGyro() {
-		return gyroSensor!=null;
+		for(int i = 0; i < sensors.length; i++) {
+			if(sensors[i] instanceof GyroSensor) {
+				return true;
+			}
+		}
+		return false;
 	}
 	public boolean hasColor() {
-		return colorSensor!=null;
+		for(int i = 0; i < sensors.length; i++) {
+			if(sensors[i] instanceof ColorSensor) {
+				return true;
+			}
+		}
+		return false;
 	}
 	public boolean hasUltrasonic() {
-		return ultrasonicSensor!=null;
+		for(int i = 0; i < sensors.length; i++) {
+			if(sensors[i] instanceof UltrasonicSensor) {
+				return true;
+			}
+		}
+		return false;
 	}
 } // end of class

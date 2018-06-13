@@ -19,13 +19,15 @@ public class Obstacle{
 		width = 20;
 		length = 25;
 	}
-	public Obstacle(ModelDisplay display) {
+	public Obstacle(ModelDisplay display, int xPos, int yPos, int width, int length, Color color) {
 		modelDisplay = display;
-		xPos = 20;
-		yPos = 30;
-		width = 20;
-		length = 25;
-		((WorldMyEdits)display).addModel(this);
+		this. xPos = xPos;
+		this.yPos = yPos;
+		this.width = width;
+		this.length = length;
+		modelDisplay = display;
+		this.color = color;
+		((RobotWorld)modelDisplay).addModel(this);
 	}
 	public Obstacle(int xPos, int yPos, int width, int length, Picture picture) {
 		this.xPos = xPos;

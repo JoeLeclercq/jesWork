@@ -14,11 +14,11 @@ public class Wall {
 	private ModelDisplay modelDisplay = null;
 	private Pen pen = new Pen();
 
-	public Wall(ModelDisplay display) {
-		x = 50;
-		y = 50;
-		deltaX = 150;
-		deltaY = 30;
+	public Wall(ModelDisplay display, int x, int y, int deltaX, int deltaY) {
+		this.x = x;
+		this.y = y;
+		this.deltaX = deltaX;
+		this.deltaY = deltaY;
 		modelDisplay = display;
 		display.addModel(this);
 	}
