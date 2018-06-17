@@ -16,12 +16,12 @@ import java.lang.Math;
  * flag, has a body color, can have a shell color, and has a pen.
  * The robot will not go beyond the model display or picture
  * boundaries.
+ * The basis of the class was made using the existing SimpleTurtle.java
+ * class written by Barb Ericson.
  * <br>
  * You can display this robot in either a picture or in
  * a class that implements ModelDisplay.
  * <br>
- * Copyright Georgia Institute of Technology 2004
- * @author Barb Ericson ericson@cc.gatech.edu
  * @author Joseph Leclercq leclercqj8@students.rowan.edu
  *
  */
@@ -76,19 +76,10 @@ public class SimpleRobot {
 	/** the name of this robot */
 	private String name = "No name";
 
-	/** Sensor port 1  */
-	private Sensor sensor1 = null;
-
-	/** Sensor port 2  */
-	private Sensor sensor2 = null;
-
-	/** Sensor port 3  */
-	private Sensor sensor3 = null;
-
-	/** Sensor port 4  */
-	private Sensor sensor4 = null;
-
+	/** list of sensors, representing the 4 ports of a EV3 robot */
 	private Sensor[] sensors = new Sensor[4];
+	
+	/** list of walls in the world the robot exists in */
 	private List<Wall> wallList = new ArrayList<Wall>();
 	////////////////// constructors ///////////////////
 
@@ -184,25 +175,45 @@ public class SimpleRobot {
 	 * picture to draw on and will appear in the middle
 	 * @param picture the picture to draw on
 	 */
-//	public SimpleRobot(Picture picture, boolean touch, boolean gyro, boolean color, boolean ultrasonic) {
-//		// invoke constructor that takes x and y
-//		this((int)(picture.getWidth() / 2),
-//				(int)(picture.getHeight() / 2));
-//		this.picture = picture;
-//		this.visible = true; // default is not to see the robot
-//		if(touch) {
-//			touchSensor = new TouchSensor();
-//		}
-//		if(gyro) {
-//			gyroSensor = new GyroSensor(heading);
-//		}
-//		if(color) {
-//			colorSensor = new ColorSensor();
-//		}
-//		if(ultrasonic) {
-//			ultrasonicSensor = new UltrasonicSensor();
-//		}
-//	}
+	public SimpleRobot(Picture picture, boolean touch, int port, boolean gyro, int port2, boolean color, int port3, boolean ultrasonic, int port4) {
+		// invoke constructor that takes x and y
+		this((int)(picture.getWidth() / 2),
+				(int)(picture.getHeight() / 2));
+		this.picture = picture;
+		this.visible = true; // default is not to see the robot
+		if(touch) {
+			if(port != 0){
+				sensors[port-1] = new TouchSensor();
+			}
+			else {
+				sensors[0] = new TouchSensor();
+			}
+		}
+		if(gyro) {
+			if(port != 0 && sensors[port2-1] == null) {
+				sensors[port2-1] = new GyroSensor(heading);
+			}
+			else {
+				sensors[1] = new GyroSensor(heading);
+			}
+		}
+		if(color) {
+			if(port != 0 && sensors[port3-1] == null) {
+				sensors[port3-1] = new ColorSensor();
+			}
+			else {
+				sensors[2] = new ColorSensor();
+			}
+		}
+		if(ultrasonic) {
+			if(port != 0 && sensors[port4-1] == null) {
+				sensors[port4-1] = new UltrasonicSensor();
+			}
+			else {
+				sensors[3] = new UltrasonicSensor();
+			}
+		}
+	}
 
 	//////////////////// methods /////////////////////////
 
@@ -243,7 +254,6 @@ public class SimpleRobot {
 		double dx = x - this.xPos;
 		double dy = y - this.yPos;
 		double arcTan = 0.0;
-		double angle = 0.0;
 
 		// avoid a divide by 0
 		if (dx == 0) {
@@ -779,8 +789,6 @@ public class SimpleRobot {
 			int halfHeight = (int)(height / 2); // of shell
 			int quarterWidth = (int)(width / 4); // of shell
 			int thirdHeight = (int)(height / 3); // of shell
-			int thirdWidth = (int)(width / 3); // of shell
-
 
 			// draw the shell
 			g2.setColor(getShellColor());
@@ -814,10 +822,18 @@ public class SimpleRobot {
 		g.drawString(this.toString(), xPos + (int)(width / 2), yPos);
 	}
 
+	/**
+	 * Method used to add a wall to the wall list
+	 * @param wall the wall to be added
+	 */
 	public void addWall(Wall wall) {
 		wallList.add(wall);
 	}
 
+	/** 
+	 * Removes a wall from the wall list when the wall is removed from the world
+	 * @param wall the wall to be removed
+	 */
 	public void removeWall(Wall wall) {
 		wallList.remove(wall);
 	}
@@ -833,55 +849,11 @@ public class SimpleRobot {
 				this.yPos + " heading " + this.heading + ".";
 	}
 
-	public int getDistanceLine() {
-		int testX = xPos;
-		int testY = yPos;
-		int pixels = 5;
-		int[] distance = new int[wallList.size()];
-		int count = 0;
-		int far;
-		// change the current position
-		for(Wall wall: wallList) {
-			int x = wall.getX();
-			int y = wall.getY();
-			Rectangle check = new Rectangle(x-20, y-20, wall.getDeltaX()+40, wall.getDeltaY()+40);
-			while(Math.sqrt((testX-xPos)*(testX-xPos)+(testY-yPos)*(testY-yPos)) < 264) {
-				testX+=(int) Math.round(pixels *  Math.sin(Math.toRadians(heading)));
-				testY+=(int) Math.round(pixels * -Math.cos(Math.toRadians(heading)));
-				if (picture != null) {
-					if (testX >= picture.getWidth() || testX<0) {
-						break;
-					}
-					if (testY >= picture.getHeight() || testY<0) {
-						break;
-					}
-				} else if (modelDisplay != null) {
-					if (testX >= modelDisplay.getWidth() || testX < 0) {
-						break;
-					}
-					if (testY >= modelDisplay.getHeight() || testY<0) {
-						break;
-					}
-				}
-				if(check.contains(testX, testY)) {
-					break;
-				}
-			}
-			far = (int)Math.sqrt((testX-xPos)*(testX-xPos)+(testY-yPos)*(testY-yPos)) - 5;
-			distance[count++] = (far>255?255:far);
-		}
-		int min = Integer.MAX_VALUE;
-		int num;
-		for(int i = 0; i < distance.length; i++) {
-			num = distance[i];
-			if(num < min) {
-				System.out.println(num);
-				min = num;
-			}
-		}
-		return min;
-	}
-
+	/**
+	 * Calculates the distance between the robot and the walls in the world
+	 * @return a distance between the robot and the nearest wall in front of it up to 255 pixels away
+	 * 
+	 */
 	public int getDistanceWall() {
 		int num = 255;
 		double slope = (Math.round(255 * Math.cos(Math.toRadians(heading)))/Math.round(255 * -Math.sin(Math.toRadians(heading))));
@@ -906,17 +878,8 @@ public class SimpleRobot {
 				wallInt = vals[1];
 				xInts = (int)((wallInt-yInt)/(slope-wallSlope));
 				yInts = (int)(slope*xInts+yInt);
-				System.out.println("x wall " + wall.getX());
-				System.out.println("y wall " + wall.getY());
-				System.out.println("x +change wall " + wall.getX()+wall.getDeltaX());
-				System.out.println("y + change wall " + wall.getY()+wall.getDeltaY());
-				System.out.println("wallSLope " + wallSlope);
-				System.out.println("wall int " + wallInt);
-				System.out.println("x where intercept " + xInts);
-				System.out.println("y where intercept " + yInts);
 				if(xInts>wall.getX() && xInts<wall.getX()+wall.getDeltaX() && yInts>wall.getY() && yInts<wall.getY()+wall.getDeltaY()) {
 					lengths[count++] = (int)Math.sqrt((xInts-xPos)*(xInts-xPos)+(yInts-yPos)*(yInts-yPos));
-					System.out.println("List it " + lengths[count-1]);
 				}
 				else {
 					lengths[count++] = 255;
@@ -924,12 +887,20 @@ public class SimpleRobot {
 			}
 
 			else {
-
+				wallSlope = .0000001;
+				wallInt = wall.getX();
+				xInts = (int)((wallInt-yInt)/(slope-wallSlope));
+				yInts = (int)(slope*xInts+yInt);
+				if(xInts>wall.getX() && xInts<wall.getX()+wall.getDeltaX() && yInts>wall.getY() && yInts<wall.getY()+wall.getDeltaY()) {
+					lengths[count++] = (int)Math.sqrt((xInts-xPos)*(xInts-xPos)+(yInts-yPos)*(yInts-yPos));
+				}
+				else {
+					lengths[count++] = 255;
+				}
 			}
 		}
 		//		need to calculate the distance between the robot and the given rectangle's at specified angles
 		for(int i = 0; i < lengths.length; i++) {
-			System.out.println("Final for loop" + lengths[i]);
 			if(num > lengths[i]) {
 				num = lengths[i];
 			}
@@ -938,6 +909,11 @@ public class SimpleRobot {
 		return (int) (num - sens.getError() + rand.nextDouble() * sens.getError()*2);
 	}
 
+	/**
+	 * Method to read the GyroSensor and find the angle change of the robot since
+	 * the last reset
+	 * @return a number representing change in degrees of the robot angle
+	 */
 	public double getGyro() {
 		GyroSensor sens = null;
 		for(int i = 0; i < sensors.length; i++) {
@@ -949,6 +925,11 @@ public class SimpleRobot {
 		double diff = (heading-sens.getHeading() + 360) %360;
 		return (add%360==add%180?diff:-1*(diff-180));
 	}
+	
+	/**
+	 * Method to check if the robot has a touch sensor
+	 * @return true if there is a touch sensor, false otherwise
+	 */
 	public boolean hasTouch() {
 		for(int i = 0; i < sensors.length; i++) {
 			if(sensors[i] instanceof TouchSensor) {
@@ -957,6 +938,11 @@ public class SimpleRobot {
 		}
 		return false;
 	}
+	
+	/**
+	 * Method to check if the robot has a gyro sensor
+	 * @return true if there is a gyro sensor, false otherwise
+	 */
 	public boolean hasGyro() {
 		for(int i = 0; i < sensors.length; i++) {
 			if(sensors[i] instanceof GyroSensor) {
@@ -965,6 +951,11 @@ public class SimpleRobot {
 		}
 		return false;
 	}
+	
+	/**
+	 * Method to check if the robot has a color sensor
+	 * @return true if there is a color sensor, false otherwise
+	 */
 	public boolean hasColor() {
 		for(int i = 0; i < sensors.length; i++) {
 			if(sensors[i] instanceof ColorSensor) {
@@ -973,6 +964,11 @@ public class SimpleRobot {
 		}
 		return false;
 	}
+	
+	/**
+	 * Method to check if the robot has a ultrasonic sensor
+	 * @return true if there is a ultrasonic sensor, false otherwise
+	 */
 	public boolean hasUltrasonic() {
 		for(int i = 0; i < sensors.length; i++) {
 			if(sensors[i] instanceof UltrasonicSensor) {
